@@ -1,24 +1,24 @@
 ---
 title: Nginx初体验
+author: FelixFly
 tags:
     - nginx
-categories: 工具使用
+categories: 
+    - 工具使用
 archives: 2018
 ---
 
----
-
-# Nginx
 
 
-
-## windows
+# windows
 
 
 
-## linux
+# linux
 
-### 安装
+<!--more-->
+
+## 安装
 
 1. 解压文件`tar -zxvf nginx-${version}.tar.gz`
 
@@ -30,7 +30,7 @@ archives: 2018
 
 3. 执行安装make && make install
 
-### 执行命令
+## 执行命令
 
 * 启动 `./nginx`
 
@@ -42,9 +42,9 @@ archives: 2018
 
 * 校验配置文件 `./nginx -t`
 
-### 系统服务
+## 系统服务
 
-#### [centos7以下采用init脚本](https://www.nginx.com/resources/wiki/start/topics/examples/initscripts/)
+### [centos7以下采用init脚本](https://www.nginx.com/resources/wiki/start/topics/examples/initscripts/)
 
 ```conf
 #!/bin/sh
@@ -190,7 +190,7 @@ esac
 
 ----
 
-####  [centos7 安装nginx](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7)
+###  [centos7 安装nginx](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7)
 
 1. 添加nginx资源`yum -y install epel-release`
 
