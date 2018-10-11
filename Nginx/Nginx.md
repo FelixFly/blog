@@ -219,7 +219,5 @@ esac
 
 cento7中按脚本方式安装过后，启动会报错，报错如下：
 
-
-
 查找各种资料，没找到解决办法，采用[centos7 安装nginx](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7)
 
