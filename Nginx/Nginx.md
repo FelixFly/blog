@@ -199,3 +199,25 @@ esac
 3. 运行`service`相关命令`service nginx start|stop|reload|status|restart`
 
 > `service`命令相当于`systemctl`，`systemctl start|stop|reload|status|restart nginx`
+
+####  防火墙相关知识
+
+* 启动  ``systemctl start firewalld` `
+* 关闭  `systemctl stop firewalld`
+* 查看状态  `systemctl status firewalld`
+* 开机禁用  `systemctl disable firewalld`
+* 开机启动  `systemctl enable firewalld` 
+* 添加  `firewall-cmd --zone=public --add-port=80/tcp --permanent`
+
+> （--permanent永久生效，没有此参数重启后失效）
+
+* 重新载入  `firewall-cmd --reload `
+* 查看  `firewall-cmd --zone= public --query-port=80/tcp `
+* 删除  `firewall-cmd --zone= public --remove-port=80/tcp --permanent`
+
+#### 问题
+
+cento7中按脚本方式安装过后，启动会报错，报错如下：
+
+查找各种资料，没找到解决办法，采用[centos7 安装nginx](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7)
+
