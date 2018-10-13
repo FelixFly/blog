@@ -1,6 +1,7 @@
 ---
 title: Nginx初体验
 author: FelixFly
+date: 2018-10-13
 tags:
     - nginx
 categories: 
@@ -8,7 +9,11 @@ categories:
 archives: 2018
 ---
 
+1.  介绍windows环境以及linux环境安装
+2. nginx作为系统服务
+3. nginx 常用执行命名
 
+<!--more-->
 
 # windows
 
@@ -16,9 +21,26 @@ archives: 2018
 
 # linux
 
-<!--more-->
+> 备用知识
+>
+> 1. centos7 防火墙相关命令
+>
+>    - 启动  `systemctl start firewalld` 	
+>    - 关闭  `systemctl stop firewalld`
+>    - 查看状态  `systemctl status firewalld`
+>    - 开机禁用  `systemctl disable firewalld`
+>    - 开机启动  `systemctl enable firewalld` 
+>    - 添加  `firewall-cmd --zone=public --add-port=80/tcp --permanent`
+>
+>    > （--permanent永久生效，没有此参数重启后失效）
+>
+>    - 重新载入  `firewall-cmd --reload `
+>    - 查看  `firewall-cmd --zone= public --query-port=80/tcp `
+>    - 删除  `firewall-cmd --zone= public --remove-port=80/tcp --permanent`
 
 ## 安装
+
+> [官方参考文档Building nginx from Sources](http://nginx.org/en/docs/configure.html)
 
 1. 解压文件`tar -zxvf nginx-${version}.tar.gz`
 
@@ -30,21 +52,11 @@ archives: 2018
 
 3. 执行安装make && make install
 
-## 执行命令
-
-* 启动 `./nginx`
-
-* 立即停止 `./nginx -s stop`
-
-* 体面停止 `./nginx -s quit`
-
-* 生效配置文件 `./nginx -s reload`
-
-* 校验配置文件 `./nginx -t`
-
 ## 系统服务
 
-### [centos7以下采用init脚本](https://www.nginx.com/resources/wiki/start/topics/examples/initscripts/)
+### 源码安装采用init脚本进行安装
+
+> [官方init脚本](https://www.nginx.com/resources/wiki/start/topics/examples/initscripts/)
 
 ```conf
 #!/bin/sh
@@ -181,16 +193,53 @@ esac
 ```
 
 1. 修改脚本中nginx以及NGINX_CONF_FILE
-
 2. 赋予运行权限 `chmod +x nginx`
-
 3. 运行`service`相关命令`service nginx start|stop|reload|status|restart`
 
+#### 问题
 
+1. cento7中按脚本方式安装过后，启动会报错，报错如下：
 
-----
+```shell
+● nginx.service - SYSV: NGINX is an HTTP(S) server, HTTP(S) reverse proxy and IMAP/POP3 proxy server
+   Loaded: loaded (/etc/rc.d/init.d/nginx; bad; vendor preset: disabled)
+   Active: failed (Result: exit-code) since 六 2018-10-13 19:58:32 CST; 18s ago
+     Docs: man:systemd-sysv-generator(8)
+  Process: 7340 ExecStart=/etc/rc.d/init.d/nginx start (code=exited, status=203/EXEC)
 
-###  [centos7 安装nginx](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7)
+10月 13 19:58:32 centos7-3 systemd[1]: Starting SYSV: NGINX is an HTTP(S) server, HTTP(S) reverse proxy and IMAP/POP3 proxy server...
+10月 13 19:58:32 centos7-3 systemd[1]: nginx.service: control process exited, code=exited status=203
+10月 13 19:58:32 centos7-3 systemd[1]: Failed to start SYSV: NGINX is an HTTP(S) server, HTTP(S) reverse proxy and IMAP/POP3 proxy server.
+10月 13 19:58:32 centos7-3 systemd[1]: Unit nginx.service entered failed state.
+10月 13 19:58:32 centos7-3 systemd[1]: nginx.service failed.
+```
+
+答： 查找各种资料，没找到解决办法，可采用下面两种安装办法
+
+### 包安装
+
+> [官方参考地址](http://nginx.org/en/linux_packages.html)
+
+1. 创建/etc/yum.repos.d/nginx.repo文件，文件内容如下：
+
+   ```shell
+   [nginx]
+   name=nginx repo
+   baseurl=http://nginx.org/packages/OS/OSRELEASE/$basearch/
+   gpgcheck=0
+   enabled=1
+   ```
+
+   > 1. OS 需要进行替换 rhel 或者centos
+   > 2.  OSRELEASE 需要用6或者7替换，来支持系统6.X以及7.X版本
+
+2. 执行`yum -y install nginx`进行安装
+
+> 安装目录为/etc/nginx，公共的配置文件在nginx.conf中，私有配置在conf.d/default.conf中
+
+###  centos7 安装nginx
+
+> [文章出处](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7)
 
 1. 添加nginx资源`yum -y install epel-release`
 
@@ -199,25 +248,19 @@ esac
 3. 运行`service`相关命令`service nginx start|stop|reload|status|restart`
 
 > `service`命令相当于`systemctl`，`systemctl start|stop|reload|status|restart nginx`
+>
+> 安装目录为/etc/nginx，配置文件在nginx.conf中
 
-####  防火墙相关知识
+## 执行命令
 
-* 启动  ``systemctl start firewalld` `
-* 关闭  `systemctl stop firewalld`
-* 查看状态  `systemctl status firewalld`
-* 开机禁用  `systemctl disable firewalld`
-* 开机启动  `systemctl enable firewalld` 
-* 添加  `firewall-cmd --zone=public --add-port=80/tcp --permanent`
+> [官方文档地址](http://nginx.org/en/docs/beginners_guide.html)
 
-> （--permanent永久生效，没有此参数重启后失效）
+- 启动 `./nginx`
 
-* 重新载入  `firewall-cmd --reload `
-* 查看  `firewall-cmd --zone= public --query-port=80/tcp `
-* 删除  `firewall-cmd --zone= public --remove-port=80/tcp --permanent`
+- 立即停止 `./nginx -s stop`
 
-#### 问题
+- 体面停止 `./nginx -s quit`
 
-cento7中按脚本方式安装过后，启动会报错，报错如下：
+- 生效配置文件 `./nginx -s reload`
 
-查找各种资料，没找到解决办法，采用[centos7 安装nginx](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7)
-
+- 校验配置文件 `./nginx -t`
