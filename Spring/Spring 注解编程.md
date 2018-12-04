@@ -20,7 +20,7 @@ archives: 2018bean
 
 ## 常用注解
 
-### 1. `@Configuration`与`@Bean`
+### `@Configuration`与`@Bean`
 
 `@Configuration`  声明Bean Difinition的来源文件
 
@@ -44,7 +44,7 @@ public class CustomConfig {
 >
 > bean的名称默认为方法名称，也可以通过`@Bean(value="person")`或者`@Bean("person")`进行指定
 
-### 2. `@Configuration`与`@ComponentScan`
+### `@Configuration`与`@ComponentScan`
 
 `@ComponentScan`指定扫描路径
 
@@ -67,7 +67,7 @@ public class ScanConfiguration {
 
 ## 常见问题
 
-### 1. `@Configuration`、其他注解与`@Bean`结合使用有什么不同
+### `@Configuration`、其他注解与`@Bean`结合使用有什么不同
 
 答：`@Configuration`注解使用的其实也是一个`Bean`，但本身是`BeanFatory`,是经过`CGLIB`进行增强的`Bean`，其他注解（`@Component`、`@Service`、`@Controller`、`@Repository`）使用的就是一个简单的`Bean`
 
@@ -83,7 +83,7 @@ public class ScanConfiguration {
 
 ## 常见问题
 
-### 1. 循环依赖的问题
+### 循环依赖的问题
 
 答：循环依赖的产生，BeanA依赖BeanB，BeanB依赖BeanC，而BeanC又依赖于BeanA，这时候就会产生循环依赖的问题，单例Bean中通过构造器注入会产生循环依赖的问题，会产生`BeanCurrentlyInCreationException`,通过`Setter`方法注入不会产生异常，可以解决循环依赖问题。原型@Bean通过`Setter`方法注入依然会产生`BeanCurrentlyInCreationException`，没办法解决循环依赖问题。
 
