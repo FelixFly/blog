@@ -9,6 +9,11 @@ categories:
 archives: 2018
 ---
 
+1. 环境
+2. 安装
+
+<!--more-->
+
 # 环境
 
 * Centos7

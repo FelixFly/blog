@@ -9,6 +9,13 @@ categories:
 archives: 2018
 ---
 
+1. Lambda
+2. Stream
+3. Default Method
+4. Optional
+
+<!-- more -->
+
 # Lambda
 
 # Stream
