@@ -1,5 +1,5 @@
 ---
-title: Spring 注解编程
+title: Spring 注解编程IOC
 author: FelixFly
 date: 2018-10-18
 tags:
@@ -187,6 +187,10 @@ public class CustomConfig {
 
 当matches方法返回true的时候进行注册当前`@Bean`，否则不注册。该注解也可以放到配置类上，matches方法返回true的时候进行注册当前配置类，否侧不注册。
 
+### `@Profile`
+
+环境注解，底层使用的是`@Conditional`
+
 ### `@Import`
 
 快捷注册`Bean`，默认名称为类的全路径
@@ -274,22 +278,160 @@ public class CustomConfig {
 
 ### `@Autowired`
 
-* `@Qualifier`
-* `@Primary`
+Spring自带的自动注入，注解的属性`required`来支持是否必须要进行依赖注入。根据以下规则进行查找进行注入
+
+1. 根据类型查找，只查询一个直接返回
+2. 根据名称查找
+
+```java
+@Service
+public class PersonService {
+
+    @Autowired
+    private PersonMapper personMapper;
+}
+```
+
+可以结合以下注解进行使用
+
+* `@Qualifier` 
+
+  指定名称进行依赖注入
+
+  ```java
+  @Service
+  public class PersonService {
+  
+      @Autowired
+      @Qualifier("personMapper")
+      private PersonMapper personMapper;
+  }
+  ```
+
+* `@Primary` 
+
+  指定优先进行依赖注入
+
+  ```java
+  @Service
+  public class PersonService {
+  
+      @Autowired
+      private PersonMapper personMapper;
+  }
+  ```
+
+  ```java
+  @Configuration
+  @ComponentScan({"top.felixfly.spring.annotation.mapper","top.felixfly.spring.annotation.service"})
+  public class CustomConfig {
+  	// 优先注入
+      @Bean("personMapper2")
+      @Primary
+      public PersonMapper personMapper(){
+          return new PersonMapper();
+      }
+  }
+  ```
+
+> 只有一个有参构造器时，`@Autowired`可以省略，可以自动进行注入
 
 ### `@Resource`
 
+Java规范(JSR250)的注解,默认按照属性的名称进行依赖查找匹配，也可以用属性`name`进行强制指定，但不支持与`@Primary`注解结合使用和`required`是否必须要进行依赖注入
+
+```java
+@Service
+public class PersonService {
+
+    @Resource
+    private PersonMapper personMapper;
+}
+
+@Service
+public class PersonService {
+	// 强制指定Bean
+    @Resource(name="personMapper2")
+    private PersonMapper personMapper;
+}
+```
+
 ### `@Inject`
+
+Java规范的注解（JSR330），功能与`@Autowired`一样，但不支持`required`是否必须要进行依赖注入。需要引入`javax.inject`
+
+```xml
+<dependency>
+    <groupId>javax.inject</groupId>
+    <artifactId>javax.inject</artifactId>
+    <version>1</version>
+</dependency>
+```
+
+```java
+@Service
+public class PersonService {
+
+    @Inject
+    private PersonMapper personMapper;
+}
+```
 
 ## 注入方式
 
 ### 构造器注入
 
+```java
+@Configuration
+public class AppConfig {
 
+    @Bean
+    public BeanOne beanOne() {
+        // 构造器注入
+        return new BeanOne(beanTwo());
+    }
+    
+    @Bean
+    public BeanOne beanThree(BeanTwo beanTwo) {
+        // 构造器注入
+        return new BeanOne(beanTwo);
+    }
+
+    @Bean
+    public BeanTwo beanTwo() {
+        return new BeanTwo();
+    }
+}
+```
 
 ### `Setter`方法注入
 
+```java
+public class BeanTwo {
 
+    @Autowired
+    public void setBeanOne(BeanOne beanOne) {
+        this.beanOne = beanOne;
+    }
+}
+```
+
+## `Aware`接口
+
+自定义组件注入Spring底层的组件，比如`ApplicationContext`，这些`Aware`接口一般通过`Processor`进行处理。`ApplicationContextAwareProcessor`处理`EnvironmentAware`、`EmbeddedValueResolverAware`、`ResourceLoaderAware`、`ApplicationEventPublisherAware`、`MessageSourceAware`、`ApplicationContextAware`
+
+| `ApplicationContextAware`        | `ApplicationContext`           |
+| -------------------------------- | ------------------------------ |
+| `ApplicationEventPublisherAware` | `ApplicationContext`事件发布器 |
+| `BeanClassLoaderAware`           | 类加载器                       |
+| `BeanFactoryAware`               | Bean 工厂                      |
+| `BeanNameAware`                  | Bean 名称                      |
+| `BootstrapContextAware`          | `BootstrapContext`             |
+| `MessageSourceAware`             | 国际化管理                     |
+| `NotificationPublisherAware`     | `Spring JMX`通知发布器         |
+| `ResourceLoaderAware`            | 资源加载器                     |
+| `EmbeddedValueResolverAware`     | `@Value`解析器                 |
+| `EnvironmentAware`               | 环境变量                       |
 
 ## 常见问题
 
@@ -466,6 +608,61 @@ public class CustomConfig {
 
 ### `@Value`
 
+属性进行赋值，可以有如下三种写法
+
+* 直接赋值
+
+  ```java
+  public class Person {
+  
+      @Value("张三")
+      private String name;
+  }
+  ```
+
+* `SpEL`表达式 #{}
+
+  ```java
+  public class Person {
+  
+      @Value("#{20-2}")
+      private String age;
+  }
+  ```
+
+* ${} 文件属性赋值（通常在环境变量`Enviroment`中）,要配合`@PropertySource`使用
+
+  ```java
+  public class Person {
+  
+      @Value("${person.age}")
+      private String age;
+  }
+  ```
+
 ### `@PropertySource`
 
+引入配置文件,配置文件下根路径下`person.properties`
+
+```java
+@PropertySource("classpath:/person.properties")
+public class CustomConfig {
+
+}
+```
+
+相当于xml中的`context:property-placeholder`
+
+```xml
+<context:property-placeholder location="classpath:person.properties"/>
+```
+
 ### `@PropertySources`
+
+多个配置文件引入，值为`PropertySource`的数组，1.8以后可以用多个`@PropertySource`代替此注解
+
+## 常见问题
+
+### 配置文件属性乱码
+
+答：注解`@PropertySource`通过属性`encoding`进行配置文件编码，该配置在4.3版本引入；xml配置文件中通过属性`file-encoding`配置文件编码
