@@ -155,6 +155,13 @@ public class CustomConfig {
 </beans>
 ```
 
+### `@Order`
+
+`Bean`的排序，或者说是优先级，两个接口`org.springframework.core.Ordered`以及`org.springframework.core.PriorityOrdered`，主要使用优先级的内容
+
+* `org.springframework.beans.factory.config.BeanPostProcessor`
+* `org.springframework.http.converter.HttpMessageConverter`
+
 ### `@Conditional`
 
 条件装配`Bean`
