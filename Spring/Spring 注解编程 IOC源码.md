@@ -52,6 +52,12 @@ archives: 2018bean
 
 后置处理的委派类
 
+## `AnnotationConfigUtils`
+
+> `org.springframework.context.annotation.AnnotationConfigUtils`
+
+注解配置的工具类
+
 # Spring 注解编程`IOC`源码分析
 
 ## 构造器 
@@ -192,13 +198,85 @@ archives: 2018bean
 
 ### `initMessageSource()`
 
+初始化`MessageSource`
+
+1. 判断可有`messageSource`的`Bean`
+   * 有，判断当前`messageSource`是否是`HierarchicalMessageSource`,是的话赋值ParentMessageSource
+   * 没有，注册`messageSource` -- `DelegatingMessageSource`,并赋值ParentMessageSource
+
 ### `initApplicationEventMulticaster()`
+
+初始化`ApplicationEvent`派发器，注册`applicationEventMulticaster` -- `SimpleApplicationEventMulticaster`
 
 ### `onRefresh()`
 
+模板方法来添加上下文刷新工作，子类进行实现
+
 ### `registerListeners()`
 
+注册监听器
+
+1. `ApplicationEvent`派发器添加事件
+2. `ApplicationEvent`派发器添加事件`Bean`
+3. 派发早期处理事件
+
 ### `finishBeanFactoryInitialization(beanFactory)`
+
+完成`BeanFactory`的实例化
+
+1. 初始化`ConversionService`
+2. 注册`EmbeddedValueResolver`
+3. 初始化`LoadTimeWeaverAware`接口的`Bean`
+4. 完成非惰性加载的单实例`Bean`初始化
+   * 触发非惰性加载的单实例`Bean`初始化`getBean()`
+   * 若是`SmartInitializingSingleton`触发回调`smartSingleton.afterSingletonsInstantiated()`
+
+#### getBean(beanName) -- doGetBean()
+
+获取`Bean`的实例
+
+1. 从`FactoryBean`中获取`Bean`
+
+2. 判断`parentBeanFactory`以及`parentBeanFactory`包含当前`Bean`，从`parentBeanFactory`进行获取
+
+3. 循环获取DependsOn的`Bean`
+
+4. 创建`Bean` -- `createBean(beanName, mbd, args)`
+
+   * 准备方法的覆盖重写 -- `prepareMethodOverrides()`
+
+   * 尝试让`BeanPostProcessor`返回一个代理`Bean`-- `resolveBeforeInstantiation(beanName, mbdToUse)`
+
+   * 真正创建`Bean`实例 -- `doCreateBean(beanName, mbdToUse, args)`,`Bean`的整个生命周期
+
+     * `createBeanInstance(beanName, mbd, args)` 实例化
+
+     * `applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName)`
+
+       `MergedBeanDefinitionPostProcessor.postProcessMergedBeanDefinition(mbd, beanType, beanName)`方法处理
+
+     * `populateBean(beanName, mbd, instanceWrapper)` 属性赋值，包含自动注入
+
+     * `initializeBean(beanName, exposedObject, mbd)` 初始化`Bean`
+
+       * `invokeAwareMethods(beanName, bean)` 调用aware接口方法
+
+       * `applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName)`
+
+         `BeanPostProcessor.postProcessBeforeInitialization()`前置方法
+
+       * `invokeInitMethods(beanName, wrappedBean, mbd)`
+
+         * 先调用`InitializingBean.afterPropertiesSet()`
+         *  反射调用init-method的方法
+
+       * `applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName)`
+
+         `BeanPostProcessor.postProcessAfterInitialization` 后置方法
+
+     * `registerDisposableBeanIfNecessary(beanName, bean, mbd)` 注册`Bean`的销毁方法
+
+       > `org.springframework.beans.factory.support.DisposableBeanAdapter`
 
 ### `finishRefresh()`
 
