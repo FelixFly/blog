@@ -44,7 +44,7 @@ archives: 2018bean
 
 > `org.springframework.beans.factory.support.DefaultListableBeanFactory`
 
-`BeanFactory`的工厂
+`BeanFactory`的工厂，主要的
 
 ## `PostProcessorRegistrationDelegate`
 
@@ -58,6 +58,18 @@ archives: 2018bean
 
 注解配置的工具类
 
+## `AbstractBeanFactory`
+
+> `org.springframework.beans.factory.support.AbstractBeanFactory`
+
+抽象`BeanFactory`
+
+## `AbstractAutowireCapableBeanFactory`
+
+> `org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory`
+
+自动注入的抽象`BeanFactory`
+
 # Spring 注解编程`IOC`源码分析
 
 ## 构造器 
@@ -65,6 +77,8 @@ archives: 2018bean
 ### 创建`BeanFactory`--`DefaultListableBeanFactory`
 
 ### 创建`reader`--`AnnotatedBeanDefinitionReader`
+
+#### `ConditionEvaluator` `@Conditional`鉴定器
 
 #### `AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry)`
 
@@ -79,7 +93,14 @@ archives: 2018bean
 7. 注册`org.springframework.context.event.internalEventListenerProcessor` -- `EventListenerMethodProcessor`
 8. 注册`org.springframework.context.event.internalEventListenerFactory` -- `DefaultEventListenerFactory`
 
-### 创建`scanner` --`ClassPathBeanDefinitionScanner`
+### 创建`scanner` --`hhh`
+
+1. `registerDefaultFilters` 注册默认的扫描拦截
+   * `Component`
+   * `ManagedBean`
+   * `Named`
+2. `setEnvironment(environment)` 赋予环境
+3. `setResourceLoader(resourceLoader)` 赋予资源加载器
 
 ## `register(annotatedClasses)`
 
@@ -88,6 +109,20 @@ archives: 2018bean
 ### `doRegisterBean()`
 
 注册实际干活的方法
+
+1. `ConditionEvaluator `鉴定`Condition条件`
+   * 判断`@Conditional`
+   * 获取`Condition`条件集合并进行排序
+   * 循环判断上述`Condition`条件
+2. `AnnotationConfigUtils.processCommonDefinitionAnnotations(abd)`
+   * `@Lazy`
+   * `@Primary`
+   * `@DependsOn`
+   * `@Role`
+   * `@Description`
+3. `Qualifier`进行处理`Primary`、`Lazy`以及其他
+4. `BeanDefinitionCustomizer#customize` `BeanDefinition`自定义器处理
+5. 注册`BeanDefinitionHolder`的`BeanDefinition`
 
 ## `scan(basePackages)`
 
@@ -241,7 +276,7 @@ archives: 2018bean
 
 3. 循环获取DependsOn的`Bean`
 
-4. 创建`Bean` -- `createBean(beanName, mbd, args)`
+4. 创建`Bean` -- `createBean(beanName, mbd, args)` 
 
    * 准备方法的覆盖重写 -- `prepareMethodOverrides()`
 
@@ -274,15 +309,27 @@ archives: 2018bean
 
          `BeanPostProcessor.postProcessAfterInitialization` 后置方法
 
+     * 检查循环依赖
+
      * `registerDisposableBeanIfNecessary(beanName, bean, mbd)` 注册`Bean`的销毁方法
 
        > `org.springframework.beans.factory.support.DisposableBeanAdapter`
 
+5. 检查必须的类型是否匹配
+
 ### `finishRefresh()`
 
-### `destroyBeans()`
+1. `clearResourceCaches();` 清楚资源缓存
 
-### `cancelRefresh(ex)`
+2. `initLifecycleProcessor()` 初始化`LifecycleProcessor`
 
-### `resetCommonCaches()`
+   > 注册lifecycleProcessor--DefaultLifecycleProcessor
+
+3. `getLifecycleProcessor().onRefresh()`调用`LifecycleProcessor#onRefresh()`方法
+
+4. 发布`ContextRefreshedEvent`
+
+5. `LiveBeansView`注册`ApplicationContext`
+
+
 
