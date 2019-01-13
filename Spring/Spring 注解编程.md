@@ -6,7 +6,7 @@ tags:
     - spring
 categories: 
     - spring
-archives: 2018bean
+archives: 2018
 ---
 
 1.  `Bean` 注册
