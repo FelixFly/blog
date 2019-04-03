@@ -63,7 +63,10 @@ systemctl start docker
   * `--name` 容器名称
   * `-i`  交互方式运行
   * `-t` 启动一个伪终端
-  * `-P`  随机映射端口
+  * `-P` 随机映射端口
+  * `-e` 设置环境变量
+  * `--link` 链接不同的容器
+  * `-v`  挂载磁盘卷(宿主目录：容器目录)
 * `docker search [image_name]` 搜索镜像
 * `docker rmi [image_id]`  删除镜像
   * `-f` 强制删除
