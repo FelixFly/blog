@@ -26,13 +26,14 @@ archives: 2019
 >    system.name = test
 >    ```
 >
->    
 
-# 配置文件的读取
+# 配置文件
 
-## Spring XML方式
+## 实现方式
 
-### `property-placeholder`方式
+#### Spring XML方式
+
+##### `property-placeholder`方式
 
 1. XML配置`application-xml-property.xml`
 
@@ -54,7 +55,7 @@ archives: 2019
    }
    ```
 
-### `PropertyPlaceholderConfigurer`方式
+##### `PropertyPlaceholderConfigurer`方式
 
 1. XML配置`application-property-configurer.xml`
 
@@ -77,7 +78,7 @@ archives: 2019
    }
    ```
 
-### `utils:properties`方式
+##### `utils:properties`方式
 
 1. XML配置`application-utils-property.xml`
 
@@ -99,19 +100,9 @@ archives: 2019
    }
    ```
 
-## 问题
+### Spring 注解方式
 
-1. 若property文件中有中文，代码中获取会出现乱码
-
-   答：三种方式分别解决如下：
-
-   * `property-placeholder`方式可利用属性`file-encoding`配置文件编码
-   * `PropertyPlaceholderConfigurer`方式可利用property属性`fileEncoding`配置文件编码
-   * `utils:properties`方式可利用将中文转换为Unicode编码写在properties文件中
-
-## Spring 注解方式
-
-### `@PropertySource`注解
+#### `@PropertySource`注解
 
 ```java
 @Setter
@@ -125,21 +116,27 @@ public class PropertySourceConfiguration {
 }
 ```
 
+### Spring Boot 注解方式
+
+####  `@ConfigurationProperties`
+
+#### 启用方式
+
+##### `@Compnent`
+
+##### `@EnableConfigurationProperties`
+
 ## 问题
 
-1. 若property文件中有中文，代码中获取会出现乱码
+## 若property文件中有中文，代码中获取会出现乱码
 
-   答：利用`@PropertySource`注解属性encoding配置文件编码
+答：Spring XML 三种方式分别解决如下:
 
-## Spring Boot 注解方式
+- `property-placeholder`方式可利用属性`file-encoding`配置文件编码
+- `PropertyPlaceholderConfigurer`方式可利用property属性`fileEncoding`配置文件编码
+- `utils:properties`方式可利用将中文转换为Unicode编码写在properties文件中
 
-###  `@ConfigurationProperty`
-
-### 启用方式
-
-#### `@Compnent`
-
-#### `@EnableConfigurationProperties`
+Spring 注解方式可利用`@PropertySource`注解属性encoding配置文件编码
 
 
 
