@@ -100,6 +100,8 @@ archives: 2019
    }
    ```
 
+> `@Value`表达式详见[ Spring Expression Language (SpEL)](<https://docs.spring.io/spring/docs/5.1.7.RELEASE/spring-framework-reference/core.html#expressions>)
+
 ### Spring 注解方式
 
 #### `@PropertySource`注解
@@ -137,6 +139,10 @@ public class PropertySourceConfiguration {
 - `utils:properties`方式可利用将中文转换为Unicode编码写在properties文件中
 
 Spring 注解方式可利用`@PropertySource`注解属性encoding配置文件编码
+
+## Spring XML中@Value表达式中$与#的区别
+
+答：`@Value`中使用的是[Spring Expression Language (SpEL)](<https://docs.spring.io/spring/docs/5.1.7.RELEASE/spring-framework-reference/core.html#expressions>)的语法，具体可查看官网介绍。$是引用配置文件中属性名称；#是引用`Bean`中的属性或者计算表达式，属性可用`.`进行链接获取，若Bean的属性中也有`.`,需要采用`Bean['X.Y']`这种写法
 
 
 
