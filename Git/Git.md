@@ -24,6 +24,24 @@ archives: 2018
 
 # Git的常用命令
 
+## config配置
+
+### 配置类型
+
+* `--local`
+* `--global`
+
+* `--system`
+
+### 查看基础配置
+
+使用`git config --global/system/local -l/--list`进行查看
+
+### 默认配置用户名以及邮箱
+
+* `git config --global user.name "userName" `
+* `git config --global user.email "userEmail"`
+
 ## `log`命令
 
 使用`git log`进行查看
