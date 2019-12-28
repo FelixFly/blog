@@ -61,4 +61,21 @@ archives: 2018
    # 新密码为至少8位，必须包含大写、小写、数据以及特需字符
    ```
 
+# 创建数据库并赋予用户权限
+
+```shell
+# 创建数据库 设置默认编码default character set utf8 collate utf8_bin
+# DEFAULT CHARACTER SET utf8: 代表的是将该库的默认编码格式设置为utf8格式。
+# COLLATE utf8_general_ci: 代表的是数据库校对规则
+# utf8_bin将字符串中的每一个字符用二进制数据存储，区分大小写
+# utf8_genera_ci不区分大小写，ci为case insensitive的缩写，即大小写不敏感
+# utf8_general_cs区分大小写，cs为case sensitive的缩写，即大小写敏感。
+create database schema_name;
+# 创建用户 ‘%’为所有
+create user 'jira'@'%' identified by 'Jira123$%^';
+# 赋予用户权限
+grant all on jira.* to 'jira';
+```
+
+
 
