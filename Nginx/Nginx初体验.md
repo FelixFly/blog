@@ -220,36 +220,41 @@ esac
 
 > [官方参考地址](http://nginx.org/en/linux_packages.html)
 
-1. 创建/etc/yum.repos.d/nginx.repo文件，文件内容如下：
+1. 安装`yum-utils`
 
    ```shell
-   [nginx]
-   name=nginx repo
-   baseurl=http://nginx.org/packages/OS/OSRELEASE/$basearch/
-   gpgcheck=0
+   yum -y install yum-utils
+   ```
+   
+2. 创建/etc/yum.repos.d/nginx.repo文件，文件内容如下：
+
+   ```shell
+   [nginx-stable]
+   name=nginx stable repo
+   baseurl=http://nginx.org/packages/centos/$releasever/$basearch/
+   gpgcheck=1
    enabled=1
+   gpgkey=https://nginx.org/keys/nginx_signing.key
+   module_hotfixes=true
+   
+   [nginx-mainline]
+   name=nginx mainline repo
+   baseurl=http://nginx.org/packages/mainline/centos/$releasever/$basearch/
+   gpgcheck=1
+   enabled=0
+   gpgkey=https://nginx.org/keys/nginx_signing.key
+   module_hotfixes=true
    ```
 
-   > 1. OS 需要进行替换 rhel 或者centos
-   > 2.  OSRELEASE 需要用6或者7替换，来支持系统6.X以及7.X版本
+3. 启动`nginx-mainline`,默认是启用`nginx-stable`
 
-2. 执行`yum -y install nginx`进行安装
+   ```shell
+   sudo yum-config-manager --enable nginx-mainline
+   ```
+
+4. 执行`yum -y install nginx`进行安装
 
 > 安装目录为/etc/nginx，公共的配置文件在nginx.conf中，私有配置在conf.d/default.conf中
-
-###  centos7 安装nginx
-
-> [文章出处](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7)
-
-1. 添加nginx资源`yum -y install epel-release`
-
-2. 安装nginx `yum -y install nginx`
-
-3. 运行`service`相关命令`service nginx start|stop|reload|status|restart`
-
-> `service`命令相当于`systemctl`，`systemctl start|stop|reload|status|restart nginx`
->
-> 安装目录为/etc/nginx，配置文件在nginx.conf中
 
 ## 执行命令
 
