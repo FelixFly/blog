@@ -23,7 +23,6 @@ archives: 2020
 >
 > Spring Boot : 2.2.2.RELEASE
 >
-> Zookeeper :  3.5.6  （注册中心使用）
 
 ## `Spring Cloud Hystrix`使用
 

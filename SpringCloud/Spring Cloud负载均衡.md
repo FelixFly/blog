@@ -284,9 +284,7 @@ archives: 2020
 ## `Spring Cloud LoadBalanced`实现
 
 > * Spring `RestTemplate` as a Load Balancer Client
->
-> * Spring `WebClient` as a Load Balancer Client
->
+>* Spring `WebClient` as a Load Balancer Client
 > * Spring `WebFlux` `WebClient` with `ReactorLoadBalancerExchangeFilterFunction`
 
 #### `@LoadBalanced`注解分析
@@ -453,6 +451,15 @@ public class QualifierApplication  implements ApplicationRunner {
 * `org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier` 服务实例列表生成器
 
   > 基于`DiscoveryClient`和`ReactiveDiscoveryClient`实现：`org.springframework.cloud.loadbalancer.core.DiscoveryClientServiceInstanceListSupplier`
+  
+* `org.springframework.cloud.loadbalancer.core.ReactorServiceInstanceLoadBalancer` 响应式服务实例负载均衡器
+
+  * `org.springframework.cloud.loadbalancer.core.ReactorLoadBalancer` 响应式负载均衡器
+    * `org.springframework.cloud.client.loadbalancer.reactive.ReactiveLoadBalancer`  响应式的负载均衡器
+
+  > 默认实现是轮询的负载均衡器：`org.springframework.cloud.loadbalancer.core.RoundRobinLoadBalancer`
+  >
+  > **仅且仅有这一种实现**
 
 ## `Netflix Ribbon` 实现
 
@@ -516,5 +523,5 @@ public class QualifierApplication  implements ApplicationRunner {
 > spring.cloud.loadbalancer.ribbon.enabled to false, so that BlockingLoadBalancerClient is used
 > instead of RibbonLoadBalancerClient.
 
-由于Spring Cloud Ribbon正在维护，官方推荐使用`spring.cloud.loadbalancer.ribbon.enabled`设置为false（禁用Ribbon），`BlockingLoadBalancerClient `替代`RibbonLoadBalancerClient`
+由于Spring Cloud Ribbon正在维护，官方推荐使用`spring.cloud.loadbalancer.ribbon.enabled`设置为false（禁用Ribbon），`BlockingLoadBalancerClient `替代`RibbonLoadBalancerClient`。
 
