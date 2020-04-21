@@ -113,6 +113,16 @@ systemctl start docker
 * `docker inspect [container_id]` 容器的信息信息
 * `docker cp [container_id]:[container_path] [desc_path]` 拷贝容器文件到宿主机地址
 
+### 网络命令
+
+* `docker network` 网络
+  * `ls` 网络列表
+  * `create` 创建网络
+    * `-subnet=`  设置网络IP区段
+    * `--driver` `nat` windos下面设置
+
+> 启动应用配置网络 --net  [network_name] --ip xxx.xxx.xxx.xx
+
 ## Dockerfile
 
 > 用来构建docker镜像的文件
