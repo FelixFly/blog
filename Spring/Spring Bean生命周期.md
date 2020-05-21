@@ -36,6 +36,13 @@ archives: 2018bean
 
 * `postProcessBeforeDestruction` 销毁之前的方法
 
+> 内置的`BeanPostProcessor` Bean后置处理器
+>
+> * `ApplicationContextAwareProcessor` 处理Aware(`EnvironmentAware ` `EmbeddedValueResolverAware` `ResourceLoaderAware` `ApplicationEventPublisherAware` `MessageSourceAware` `ApplicationContextAware`)回调方法
+> * `CommonAnnotationBeanPostProcessor` 公共注解(`@PostConstruct` `@PreDestroy` `@Resource`、`@WebServiceRef`以及`@EJB` )处理
+> * `AutowiredAnnotationBeanPostProcessor` 注入注解(`@Autowired`、`@Value`、`@Inject` )处理
+> * `ConfigurationClassPostProcessor` 配置类(@Configuration)处理
+
 ## `Aware`接口 
 
 * `BeanNameAware` `BeanClassLoaderAware` `BeanFactoryAware` Aware方法的回调
@@ -51,10 +58,6 @@ archives: 2018bean
 
 # Spring Bean生命周期
 
-> `@PostConstruct` `@PreDestroy` 是通过BeanPostProcessor实现的，实现类：`CommonAnnotationBeanPostProcessor`，还包含`@Resource`、`@WebServiceRef`以及`@EJB`
->
-> `@Autowired`、`@Value`、`@Inject` 也是通过BeanPostProcessor实现的，实现类：`AutowiredAnnotationBeanPostProcessor`
->
 > 生命周期的代码：`org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#doCreateBean`
 >
 > 完成的代码：`org.springframework.beans.factory.config.ConfigurableListableBeanFactory#preInstantiateSingletons`
