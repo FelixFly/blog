@@ -96,27 +96,35 @@ public void servicePoint() {
   * `within(com.xyz.service.*)` service包以及子包所有类的方法
 
 * `this` 指定代理实现的接口
-  * `this(com.xyz.service.AccountService)` 指定`AccountService`接口下的所有方法
-
+  
+* `this(com.xyz.service.AccountService)` 指定`AccountService`接口下的所有方法
+  
 * `target` 执行目标对象实现的接口
-  * `target(com.xyz.service.AccountService)` 指定`AccountService`接口下的所有方法
-
+  
+* `target(com.xyz.service.AccountService)` 指定`AccountService`接口下的所有方法
+  
 * `args` 执行目标方法的参数
-  * `args(java.io.Serializable)` 有`Serializable`参数的所有方法
-
+  
+* `args(java.io.Serializable)` 有`Serializable`参数的所有方法
+  
 * `@target`
-  * `@target(org.springframework.transaction.annotation.Transactional)` 目标对象有`@Transactional`注解的类所有方法
-
+  
+* `@target(org.springframework.transaction.annotation.Transactional)` 目标对象有`@Transactional`注解的类所有方法
+  
 * `@within`
-  * `@within(org.springframework.transaction.annotation.Transactional)` 目标对象有`@Transactional`注解申明的类所有方法
-
+  
+* `@within(org.springframework.transaction.annotation.Transactional)` 目标对象有`@Transactional`注解申明的类所有方法
+  
 * `@annotation`
-  * `@annotation(org.springframework.transaction.annotation.Transactional)` 有`@Transactional`注解的所有方法
-
+  
+* `@annotation(org.springframework.transaction.annotation.Transactional)` 有`@Transactional`注解的所有方法
+  
 * `@args`
-  * `@args(com.xyz.security.Classified)` 有`@Classified`注解的单参数方法
-
+  
+* `@args(com.xyz.security.Classified)` 有`@Classified`注解的单参数方法
+  
 * `bean`
+  
   * b`ean(*ServiceImpl)` 所有以`ServiceImpl`结尾Bean的所有方法
 
 ## `@Before`
@@ -240,6 +248,52 @@ public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 </aop:config>
 ```
 
+# `AOP`的执行顺序
+
+正常执行流程：`@Around` -> `@Before` -> `@After` -> `@AfterReturning`
+
+异常执行流程：`@Around` -> `@Before` -> `@After` -> `@AfterThrowing`
+
+# 切面的主要接口
+
+## `PointCut` 切入点
+
+> * `ClassFilter` 类的过滤器
+> * `MethodMatcher` 方法的匹配器
+
+## `Advice`  通知
+
+* `BeforeAdvice` 前置通知
+* `AfterAdvice` 后置通知
+* `AfterReturningAdvice` 执行返回通知
+* `ThrowsAdvice` 异常通知
+
+## `MethodInterceptor` 方法的拦截器（继承Advice）
+
+* `MethodBeforeAdviceInterceptor` 方法前置拦截器
+* `AspectJAroundAdvice` `ApectJ`环绕拦截器
+* `AspectJAfterAdvice` `ApectJ`后置拦截器
+* `AfterReturningAdviceInterceptor` 后置返回拦截器
+* `AspectJAfterThrowingAdvice` 后置异常拦截器
+
+## `Advisor` 通知器
+
+> * `Advice` 通知
+
+## `PointcutAdvisor` 切入点通知器（继承Advisor）
+
+> * `Pointcut` 切入点
+
+# 动态代理的主要接口
+
+## `AopProxy` `Aop`动态代理
+
+* `JdkDynamicAopProxy` `Jdk`动态代理
+* `CglibAopProxy` `Cglib`动态代理
+  * `ObjenesisCglibAopProxy` 扩展的 `Cglib`动态代理
+
+> 这个是通过`org.springframework.aop.framework.DefaultAopProxyFactory`进行动态匹配生成，构建执行链`org.springframework.aop.framework.DefaultAdvisorChainFactory#getInterceptorsAndDynamicInterceptionAdvice`关联了`Advisor`
+
 # `AOP`的源码分析
 
 ## `@EnableAspectJAutoProxy`
@@ -252,108 +306,216 @@ public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 
 ## `AnnotationAwareAspectJAutoProxyCreator`
 
-类结构
+实现主要接口
 
-* `AspectJAwareAdvisorAutoProxyCreator`
-  * `AbstractAdvisorAutoProxyCreator`
-    * `AbstractAutoProxyCreator`
-      * `ProxyProcessorSupport` 
-        * `ProxyConfig`
-        * `Ordered` 接口
-        * `BeanClassLoaderAware` 接口
-        * `AopInfrastructureBean` 接口
-      * `SmartInstantiationAwareBeanPostProcessor` 接口
-        * `InstantiationAwareBeanPostProcessor` 接口
-          * `BeanPostProcessor` 接口
-      * `BeanFactoryAware` 接口
+* `BeanFactoryAware`  `BeanFactory`回调接口
+* `InstantiationAwareBeanPostProcessor` 实例化执行的接口
+* `BeanPostProcessor` Bean后置处理器
 
-> `BeanPostProcessor` 
->
-> * `postProcessBeforeInitialization` 初始化之前执行方法
-> * `postProcessAfterInitialization` 初始化之后执行方法
+### `BeanFactoryAware`  `BeanFactory`回调接口
+
+- `AbstractAdvisorAutoProxyCreator#setBeanFactory`
+
+- `AnnotationAwareAspectJAutoProxyCreator#initBeanFactory`
+
+  - `ReflectiveAspectJAdvisorFactory`
+
+    > 处理`Advice`通知注解`@Around`、`@Before`、`@After`、`@AfterReturning`、`@AfterThrowing`
+
+    构建了一个`PointcutAdvisor`(`InstantiationModelAwarePointcutAdvisorImpl`)
+
+    * `AspectJExpressionPointcut` `PointCut`切点表达式
+    * `Advice`  通知
+
+  - `BeanFactoryAspectJAdvisorsBuilderAdapter`
+
+### `InstantiationAwareBeanPostProcessor` 实例化执行的接口
+
+#### `InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation` 实例化执行的方法
+
+`AbstractAutoProxyCreator#postProcessBeforeInstantiation`
+
+* 判断是否是通知Bean
+  * `Advice`、`Pointcut`、`Advisor`、`AopInfrastructureBean` 这几个类的子类
+  * `@Aspect`注解的类
+  * bean的名词是否以bean的Class名称开头并且以`.ORIGINAL`结束
+* 是否需要跳过
+  * 获取`Advisor`通知器列表(获取到了`InstantiationModelAwarePointcutAdvisorImpl`)
+* 是否自定义`TargetSourceCreator`，若是有直接执行`createProxy`
+
+### `BeanPostProcessor` Bean后置处理器
+
+#### `BeanPostProcessor#postProcessAfterInitialization` 初始化执行的方法
+
+`AbstractAutoProxyCreator#postProcessAfterInitialization`
+
+- `wrapIfNecessary`  
+  - 判断是否是通知Bean
+  - 是否需要跳过
+  - 判断是否有`Advice`通知的Bean创建代理
+    - `createProxy`
+      - `DefaultAopProxyFactory#createAopProxy`
+        - `config.isProxyTargetClass()`
+          - 接口或者是Proxy的子类，使用`JdkDynamicAopProxy`
+          - 其他使用`ObjenesisCglibAopProxy`
+        - 创建`JdkDynamicAopProxy`
+
+# 通过代码实现切面
+
+## 实现一个`PointAdvisor`
+
+```java
+/**
+ * 日志通知器
+ *
+ * @author FelixFly <chenglinxu@yeah.net>
+ * @date 2020/5/18
+ */
+public class TraceBeanFactoryPointcutAdvisor extends AbstractBeanFactoryPointcutAdvisor {
 
 
+    @Override
+    public Pointcut getPointcut() {
+        // 所有的方法
+        return Pointcut.TRUE;
+    }
+}
+```
 
-> `InstantiationAwareBeanPostProcessor` 
->
-> * `postProcessBeforeInstantiation` 实例化之前执行方法
-> * `postProcessAfterInstantiation` 实例化之后执行方法
-> * `postProcessProperties` 使用属性之前执行方法
-> * `postProcessPropertyValues`  使用属性之前执行方法，允许检查依赖
->
-> `SmartInstantiationAwareBeanPostProcessor` 
->
-> * `predictBeanType`  预知最后返回bean的类型，`postProcessBeforeInstantiation` 回调
-> * `determineCandidateConstructors` 决断获取Bean的预选构造器
-> * `getEarlyBeanReference` 获取早期的Bean引用，解决循环引用
+## 实现一个`MethodInterceptor`
 
-### 实例化`createBean`
+```java
+/**
+ * 日志拦截器
+ *
+ * @author FelixFly <chenglinxu@yeah.net>
+ * @date 2020/5/18
+ */
+public class TraceInterceptor extends SimpleTraceInterceptor {
 
-* `resolveBeforeInstantiation` 给`BeanPostFrocessor`一个返回代理对象实例的一个机会
 
-  * `applyBeanPostProcessorsBeforeInstantiation`
+    private final AtomicInteger count = new AtomicInteger();
 
-    * `InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation`
+    @Override
+    protected boolean isLogEnabled(Log logger) {
+        // 调整日志级别
+        return logger.isInfoEnabled();
+    }
 
-      `AbstractAutoProxyCreator#postProcessBeforeInstantiation`
 
-      * 判断是否是通知Bean
-        * `Advice`、`Pointcut`、`Advisor`、`AopInfrastructureBean` 这几个类的子类
-        * `@Aspect`注解的类
-        * bean的名词是否以bean的Class名称开头并且以`.ORIGINAL`结束
-      * 是否需要跳过
-        * 获取`Advisor`通知器列表
-      * 是否自定义`TargetSourceCreator`，若是有直接执行`createProxy`
+    @Override
+    protected void writeToLog(Log logger, String message, Throwable ex) {
+        // 打印日志方式
+        if (Objects.nonNull(ex)) {
+            logger.error(message, ex);
+            return;
+        }
+        logger.info(message);
+    }
 
-  * `applyBeanPostProcessorsAfterInitialization` 上述bean返回不为空的时候才执行，也就是自定义了`TargetSourceCreator`的时候才会如下方法
 
-    * `BeanProcessor#postProcessAfterInitialization`
+    @Override
+    protected Object invokeUnderTrace(MethodInvocation invocation, Log logger) throws Throwable {
+        // 这地方有个并发的问题
+        // 可以构建个上下文用ThreadLocal处理，ThreadLocal什么时候进行移除？
+        int num = count.incrementAndGet();
+        long start = System.currentTimeMillis();
+        try {
+            Object proceed = invocation.proceed();
+            // 执行序号|执行方法名|执行时间|入参|出参|错误信息
+            writeToLog(logger, getDescription(invocation, num, proceed, System.currentTimeMillis() - start));
+            return proceed;
 
-      `AbstractAutoProxyCreator#postProcessAfterInitialization`
+        } catch (Throwable ex) {
+            writeToLog(logger, getDescription(invocation, num, null, System.currentTimeMillis() - start), ex);
+            throw ex;
+        }
+    }
 
-      * `wrapIfNecessary`  
-        * 判断是否是通知Bean
-        * 是否需要跳过
-        * 判断是否有`Advice`通知的Bean创建代理
-          * `createProxy`
-            * `DefaultAopProxyFactory#createAopProxy`
-              * `config.isProxyTargetClass()`
-                * 接口或者是Proxy的子类，使用`JdkDynamicAopProxy`
-                * 其他使用`ObjenesisCglibAopProxy`
-              * 创建`JdkDynamicAopProxy`
+    private String getDescription(MethodInvocation invocation, int num, Object returnObject, long time) {
+        Method method = invocation.getMethod();
+        Object[] arguments = invocation.getArguments();
+        return String.format("%d|%s#%s|%d|%s|%s", num,
+                method.getDeclaringClass().getSimpleName(), method.getName(), time, JSON.toJSONString(arguments),
+                Objects.isNull(returnObject) ? "" : JSON.toJSONString(returnObject));
+    }
+}
+```
 
-### 初始化`initializeBean`
+## 配置Bean信息
 
-- `invokeAwareMethods` —— `BeanFactoryAware` `的方法
+```java
+/**
+ * Aop切面配置
+ *
+ * @author FelixFly <chenglinxu@yeah.net>
+ * @date 2019/11/28
+ */
+@Configuration
+@EnableAspectJAutoProxy // 一定要开启，不开启无效，自定义的实现是通过EnableAspectJAutoProxy来实现的
+public class AopConfiguration {
 
-  - `AbstractAdvisorAutoProxyCreator#setBeanFactory`
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public TraceBeanFactoryPointcutAdvisor traceBeanFactoryPointcutAdvisor(){
+        TraceBeanFactoryPointcutAdvisor pointcutAdvisor = new TraceBeanFactoryPointcutAdvisor();
+        pointcutAdvisor.setAdvice(traceInterceptor());
+        return pointcutAdvisor;
+    }
 
-  - `AnnotationAwareAspectJAutoProxyCreator#initBeanFactory`
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public TraceInterceptor traceInterceptor(){
+        return new TraceInterceptor();
+    }
+}
+```
 
-    - `ReflectiveAspectJAdvisorFactory`
+## 若是不希望拦截所有的方法，自行实现`Pointcut`
 
-      处理`Advice`通知注解`@Around`、`@Before`、`@After`、`@AfterReturning`、`@AfterThrowing`
+```java
+/**
+ * 日志切面
+ *
+ * @author FelixFly <chenglinxu@yeah.net>
+ * @date 2020/5/18
+ */
+public class TracePointcut implements Pointcut, Serializable {
 
-    - `BeanFactoryAspectJAdvisorsBuilderAdapter`
+    public static final TracePointcut INSTANCE = new TracePointcut();
 
-## 初始化其他Bean`initializeBean`
+    /**
+     * Enforce Singleton pattern.
+     */
+    private TracePointcut() {
+    }
 
-- `applyBeanPostProcessorsAfterInitialization`
+    @Override
+    public ClassFilter getClassFilter() {
+        // service 注解打点,true表示派生的注解
+        return new AnnotationClassFilter(Service.class, true);
+    }
 
-  调用`BeanPostProcessor#postProcessAfterInitialization`
+    @Override
+    public MethodMatcher getMethodMatcher() {
+        return MethodMatcher.TRUE;
+    }
 
-  ——`AbstractAutoProxyCreator#postProcessAfterInitialization`
+    /**
+     * Required to support serialization. Replaces with canonical
+     * instance on deserialization, protecting Singleton pattern.
+     * Alternative to overriding {@code equals()}.
+     */
+    private Object readResolve() {
+        return INSTANCE;
+    }
 
-  - `wrapIfNecessary`  
-    - 判断是否是通知Bean
-    - 是否需要跳过
-    - 判断是否有`Advice`通知的Bean创建代理
-      - `createProxy`
-        - `DefaultAopProxyFactory#createAopProxy`
-          - `config.isProxyTargetClass()`
-            - 接口或者是Proxy的子类，使用`JdkDynamicAopProxy`
-            - 其他使用`ObjenesisCglibAopProxy`
-          - 创建`JdkDynamicAopProxy`
+    @Override
+    public String toString() {
+        return "Pointcut.TRUE";
+    }
+}
+```
 
 # 事务的注解与源码分析
 
