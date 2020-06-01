@@ -527,26 +527,28 @@ public class TracePointcut implements Pointcut, Serializable {
 >
 > * 重复读
 >
->   一个线程读数据
+>   一个线程读数据，另一个线程改数据，导致同一个线程获取的数据不一致。
 >
 > * 幻读
 >
+>   一个线程读数据，另一个线程添加数据，导入同一个线程获取的数据条目不一致，多出来的条目称为幻行。
+>
 > 事务的隔离级别`Connection`
 >
-> * `READ_UNCOMMITTED`
-> * `READ_COMMITTED`
-> * `REPEATABLE_READ`
-> * `SERIALIZABLE`
+> * `READ_UNCOMMITTED` 读未提交的
+> * `READ_COMMITTED` 读已提交
+> * `REPEATABLE_READ` 重复读
+> * `SERIALIZABLE` 串行
 >
 > 事务的传播机制`TransactionDefinition`
 >
-> * `REQUIRED`
-> * `SUPPORTS`
-> * `MANDATORY`
-> * `REQUIRES_NEW`
-> * `NOT_SUPPORTED`
-> * `NEVER`
-> * `NESTED`
+> * `REQUIRED` 必须以事务执行，若有事务，以当前事务执行，没有事务重新启动新事务执行
+> * `SUPPORTS` 支持事务执行，若有事务，用当前事务执行，没有事务不进行事务操作
+> * `MANDATORY`  支持事务执行，若有事务，用当前事务执行，没有事务抛错
+> * `REQUIRES_NEW` 以新事务执行
+> * `NOT_SUPPORTED` 支持无事务执行
+> * `NEVER` 无事务执行，有事务抛错
+> * `NESTED` 若是有事务存在，嵌套事务执行
 
 ## 常用注解
 
@@ -582,11 +584,11 @@ public class TracePointcut implements Pointcut, Serializable {
 
     注册如下的Bean
 
-    * `transactionAdvisor`——`BeanFactoryTransactionAttributeSourceAdvisor`
+    * `transactionAdvisor`——`BeanFactoryTransactionAttributeSourceAdvisor` 事务通知者
       * `TransactionAttributeSource`
       * `Advice`——`TransactionInterceptor` 
     * `transactionAttributeSource`——`AnnotationTransactionAttributeSource`
-    * `transactionInterceptor`——`TransactionInterceptor`
+    * `transactionInterceptor`——`TransactionInterceptor` 事务方法拦截器
       * `TransactionAttributeSource`
       * `TransactionManager`
 
@@ -594,6 +596,3 @@ public class TracePointcut implements Pointcut, Serializable {
 
   * `AspectJJtaTransactionManagementConfiguration`
   * `AspectJTransactionManagementConfiguration`
-
-
-
