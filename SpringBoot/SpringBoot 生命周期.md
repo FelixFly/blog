@@ -5,7 +5,7 @@ date: 2020-05-13
 tags:
     - spring boot
 categories: 
-    - spring toot
+    - spring boot
 archives: 2020
 ---
 
