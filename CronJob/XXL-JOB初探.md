@@ -36,7 +36,7 @@ archives: 2020
    ```shell
    # 创建lan名称的网络，不然无法指定ip
    docker network create --driver nat --subnet=172.29.212.0/23 lan
-   docker run --name mysql -e MYSQL_ROOT_PASSWORD=password@227 --net lan --ip 172.29.212.23 -d mysql:5.7.27 
+   docker run --name mysql -e MYSQL_ROOT_PASSWORD=password@227 --net lan -d mysql:5.7.27 
    ```
 
 ## 安装`xxl-job`
@@ -50,8 +50,10 @@ archives: 2020
 2. 创建启动`docker`容器
 
    ```shell
-   docker run --net lan -e PARAMS="--spring.datasource.url=jdbc:mysql://172.29.212.23:3306/xxl_job?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai  --spring.datasource.username=root  --spring.datasource.password=password@227" -p 8080:8080 --name xxl-job-admin  -d xuxueli/xxl-job-admin:2.2.0
+   docker run --net lan -e PARAMS="--spring.datasource.url=jdbc:mysql://mysql:3306/xxl_job?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai  --spring.datasource.username=root  --spring.datasource.password=password@227" -p 8080:8080 --name xxl-job-admin  -d xuxueli/xxl-job-admin:2.2.0
    ```
+   
+3. 访问地址：http://127.0.0.1:8080/xxl-job-admin/，用户名/密码：admin/123456
 
 # 调用定时任务
 
