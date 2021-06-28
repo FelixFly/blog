@@ -196,9 +196,10 @@ archives: 2021
 # Environment 扩展点执行顺序
 
 1. `PropertySourceLocator` 执行
-2. `ApplicationEnvironmentPreparedEvent` 优先级在最高优先级 + 10 之前的执行
-3. `EnvironmentPostProcessor` 执行
-4. `ApplicationEnvironmentPreparedEvent` 优先级在最高优先级 + 10 之后的执行
-5. `ApplicationContextInitializer` 执行
-6. `ApplicationContextInitializedEvent` 执行
-7. `ApplicationPreparedEvent` 执行
+2. `EnvironmentRepository` 执行
+3. `ApplicationEnvironmentPreparedEvent` 优先级在最高优先级 + 10 之前的执行
+4. `EnvironmentPostProcessor` 执行
+5. `ApplicationEnvironmentPreparedEvent` 优先级在最高优先级 + 10 之后的执行
+6. `ApplicationContextInitializer` 执行
+7. `ApplicationContextInitializedEvent` 执行
+8. `ApplicationPreparedEvent` 执行
