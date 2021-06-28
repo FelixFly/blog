@@ -14,8 +14,7 @@ archives: 2020
 
 <!--more -->
 
-> ：`Spring Boot 2.1.4.RELEASE`
->
+> 版本说明：`Spring Boot 2.1.4.RELEASE`
 
 # Spring Boot 事件
 
