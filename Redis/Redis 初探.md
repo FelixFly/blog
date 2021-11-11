@@ -1,4 +1,4 @@
-```
+---
 title: Redis初探
 author: FelixFly
 date: 2021-11-28
@@ -7,7 +7,7 @@ tags:
 categories: 
     - 中间件
 archives: 2021
-```
+---
 
 -----------------
 
