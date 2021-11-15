@@ -373,3 +373,4 @@ databases 16
 3. 数据类型汇总：https://redis.io/topics/data-types
 4. 数据类型介绍：https://redis.io/topics/data-types-intro
 5. 所有命令：https://redis.io/commands
+5. 极客时间Redis专栏：https://time.geekbang.org/column/intro/100056701?tab=catalog
