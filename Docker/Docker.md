@@ -80,7 +80,7 @@ systemctl start docker
 * `docker rmi [image_id]`  删除镜像
   * `-f` 强制删除
   * `[image_id]:[image_tag][image_id]:[image_tag]` 删除多个
-  * `${docker images -q}` 删除所有
+  * `$(docker images -q)` 删除所有
 
 ## 容器命令
 
@@ -104,7 +104,7 @@ systemctl start docker
 
   * `-f` 强制删除
 
-  * `${docker ps -a -q}` 删除所有容器
+  * `$(docker ps -a -q)` 删除所有容器
 
     > `docker ps -a -q|xargs docker rm`
 

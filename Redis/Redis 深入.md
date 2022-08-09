@@ -53,6 +53,8 @@ dir ./
 
 ### 如何工作？
 
+> save 命令是同步执行，不需要fork，整个操作会堵塞主进程
+
 1. Redis fork，此时存在父子进程，这个会阻塞主(父)进程
 2. 子进程开始写数据到临时的rdb文件
 3. 写完新的RDB文件，替换旧的RDB文件
@@ -66,7 +68,7 @@ appendonly yes
 appendfilename "appendonly.aof"
 ```
 
-### 何时工作
+### 何时工作？
 
 ```properties
 # 每次执行都写文件，强一致性，性能比较差 
@@ -121,7 +123,7 @@ auto-aof-rewrite-min-size 64mb
 
 # Redis淘汰策略
 
-配置方式，使用淘汰策略必须设置最大内次，不然不启作用
+配置方式，使用淘汰策略必须设置最大内存，不然不启作用
 
 ```properties
 # 设置最大内存
