@@ -37,7 +37,7 @@ archives: 2020
 * 就绪 可运行，等待CPU分配
 * 阻塞 等待某种外部事件发生，否则不能运行
 
-![image-20220223075409954](/Users/xcl/study/Github/blog/Concurrent/Concurrent Core/image-20220223075409954.png)
+![image-20220223075409954](Concurrent Core/image-20220223075409954.png)
 
 ## 五态模型
 
@@ -47,7 +47,7 @@ archives: 2020
 * 阻塞 等待某种外部事件发生，否则不能运行
 * 退出 已结束，所以也称结束状态，释放操作系统分配的资源。
 
-![image-20220223075433381](/Users/xcl/study/Github/blog/Concurrent/Concurrent Core/image-20220223075433381.png)
+![image-20220223075433381](Concurrent Core/image-20220223075433381.png)
 
 ## Java 线程状态
 
@@ -59,7 +59,7 @@ archives: 2020
 * BLOCKED   阻塞状态，被锁阻塞Sychronized、Lock，不可以主动唤醒
 * TERMINATED 结束状态，线程执行结束
 
-![image-20220223075450338](/Users/xcl/study/Github/blog/Concurrent/Concurrent Core/image-20220223075450338.png)
+![image-20220223075450338](Concurrent Core/image-20220223075450338.png)
 
 ## 线程状态用途
 
