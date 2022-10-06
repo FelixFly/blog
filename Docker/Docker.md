@@ -28,9 +28,7 @@ archives: 2019
 
 # Docker 理念
 
-
-
-![architecture](architecture-5032210.svg)
+![architecture-5032210](Docker/architecture-5032210.svg)
 
 
 
@@ -39,7 +37,7 @@ archives: 2019
 
 
 
-![Container@2x](Container@2x-5032141.png)
+![Container@2x-5032141](Docker/Container@2x-5032141.png)
 
 Docker Engine运行在操作系统之上，应用层有基础层，用层的概念递增上去的。
 
