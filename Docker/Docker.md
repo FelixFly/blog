@@ -28,18 +28,14 @@ archives: 2019
 
 # Docker 理念
 
-![architecture-5032210](Docker/architecture-5032210.svg)
-
-
+![architecture](architecture.svg)
 
 * Images 镜像，模板文件，相当于Java中的Class文件
 * Containers 容器，运行镜像的容器，相当于Java中对象
 
 
 
-![Container@2x-5032141](Docker/Container@2x-5032141.png)
-
-Docker Engine运行在操作系统之上，应用层有基础层，用层的概念递增上去的。
+![Container@2x](Container@2x.png)Docker Engine运行在操作系统之上，应用层有基础层，用层的概念递增上去的。
 
 # 下载安装(Linux)
 
