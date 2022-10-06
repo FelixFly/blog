@@ -28,12 +28,18 @@ archives: 2019
 
 # Docker 理念
 
-![architecture](Docker/architecture.svg)
+
+
+![architecture](architecture-5032210.svg)
+
+
 
 * Images 镜像，模板文件，相当于Java中的Class文件
 * Containers 容器，运行镜像的容器，相当于Java中对象
 
-![Container@2x](Docker/Container@2x.png)
+
+
+![Container@2x](Container@2x-5032141.png)
 
 Docker Engine运行在操作系统之上，应用层有基础层，用层的概念递增上去的。
 
@@ -46,9 +52,22 @@ yum install -y yum-utils device-mapper-persistent-data lvm2
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 yum install docker-ce docker-ce-cli containerd.io
 systemctl start docker
+
 ```
 
-> [阿里云加速地址](<https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors>)
+```shell
+# 使用阿里云加速器
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://xxxx.mirror.aliyuncs.com"]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+
 
 # 常用命令
 
@@ -95,8 +114,9 @@ systemctl start docker
 * `docker kill [container_id/contrainer_name]` 强制停止容器
 * `docker attach [container_id]` 进入容器(不产生新的进程）
 * `docker exec -it [container_id] [bashshell]` 进入容器(产生新的进程),[bashshell]为`/bin/bash`
-* `exit` 退出并停止容器
-* `ctrl+p+q` 退出容器，并不停止容器
+
+  * `exit` 退出并停止容器
+  * `ctrl+p+q` 退出容器，并不停止容器
 
 * `docker restart [container_id/contrainer_name]` 重启容器
 
@@ -141,6 +161,7 @@ systemctl start docker
 * Docker 简介：https://docs.docker.com/get-started/overview/
 * Docker与VM： https://docs.docker.com/get-started/
 * Docker 命令：https://docs.docker.com/engine/reference/commandline/docker/
+* 阿里云加速地址: https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors
 
 
 
