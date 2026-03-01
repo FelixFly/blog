@@ -36,21 +36,27 @@ git fetch origin "$GIT_BRANCH" --quiet
 LOCAL_HEAD=$(git rev-parse HEAD)
 REMOTE_HEAD=$(git rev-parse "origin/$GIT_BRANCH")
 
-if [ "$LOCAL_HEAD" = "$REMOTE_HEAD" ]; then
+# 首次部署（current 符号链接不存在）或有代码更新时才执行构建
+if [ -L "$CURRENT_LINK" ] && [ "$LOCAL_HEAD" = "$REMOTE_HEAD" ]; then
     log "无更新，跳过部署 (HEAD: ${LOCAL_HEAD:0:8})"
     exit 0
 fi
 
-log "检测到更新: ${LOCAL_HEAD:0:8} -> ${REMOTE_HEAD:0:8}"
+if [ "$LOCAL_HEAD" != "$REMOTE_HEAD" ]; then
+    log "检测到更新: ${LOCAL_HEAD:0:8} -> ${REMOTE_HEAD:0:8}"
 
-# 拉取合并
-git pull origin "$GIT_BRANCH" --quiet
-log "代码拉取完成"
+    # 拉取合并
+    git pull origin "$GIT_BRANCH" --quiet
+    log "代码拉取完成"
 
-# 安装依赖（仅 package-lock.json 变化时重装）
-if git diff "$LOCAL_HEAD" "$REMOTE_HEAD" --name-only | grep -q "package-lock.json"; then
-    log "依赖有变更，执行 npm install"
-    npm install --production=false --silent
+    # 安装依赖（仅 package-lock.json 变化时重装）
+    if git diff "$LOCAL_HEAD" "$REMOTE_HEAD" --name-only | grep -q "package-lock.json"; then
+        log "依赖有变更，执行 npm install"
+        npm install --production=false --silent
+    fi
+else
+    log "首次部署 (HEAD: ${LOCAL_HEAD:0:8})"
+    REMOTE_HEAD="$LOCAL_HEAD"
 fi
 
 # 构建
