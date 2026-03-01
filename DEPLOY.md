@@ -55,7 +55,7 @@ npm install
 编辑 `docusaurus.config.ts`，修改 `url` 为实际域名：
 
 ```typescript
-url: 'https://your-domain.com',
+url: 'https://www.felixfly.top',
 baseUrl: '/',
 ```
 
@@ -73,7 +73,7 @@ baseUrl: '/',
 
 ```bash
 cp nginx.conf /etc/nginx/conf.d/blog.conf
-# 编辑 /etc/nginx/conf.d/blog.conf，替换 your-domain.com
+# 编辑 /etc/nginx/conf.d/blog.conf，替换 www.felixfly.top
 nginx -t && nginx -s reload
 ```
 
@@ -97,7 +97,7 @@ apt install certbot python3-certbot-nginx   # Debian/Ubuntu
 yum install certbot python3-certbot-nginx   # CentOS/RHEL
 
 # 自动配置 HTTPS
-certbot --nginx -d your-domain.com
+certbot --nginx -d www.felixfly.top
 
 # 验证证书自动续期
 certbot renew --dry-run
