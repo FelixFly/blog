@@ -54,7 +54,7 @@ const categories = [
   },
   {
     title: 'AI 与大模型',
-    count: 5,
+    count: 6,
     description: 'AI 辅助编程理念、BMAD 方法论、Spec Kit 规范工具、OpenSpec SDD 设计',
     link: '/docs/ai/ai-coding-concepts',
   },

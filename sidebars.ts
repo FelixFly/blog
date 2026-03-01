@@ -147,6 +147,7 @@ const sidebars: SidebarsConfig = {
       label: 'AI 与大模型',
       items: [
         'ai/ai-coding-concepts',
+        'ai/claude-code-memory',
         'ai/bmad-method',
         'ai/spec-kit',
         'ai/openspec-sdd',

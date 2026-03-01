@@ -156,6 +156,7 @@ const config: Config = {
           position: 'left',
           items: [
             {label: 'AI 编程理念', to: '/docs/ai/ai-coding-concepts'},
+            {label: '记忆系统', to: '/docs/ai/claude-code-memory'},
             {label: 'BMAD 方法论', to: '/docs/ai/bmad-method'},
             {label: 'Spec Kit', to: '/docs/ai/spec-kit'},
             {label: 'OpenSpec SDD', to: '/docs/ai/openspec-sdd'},
