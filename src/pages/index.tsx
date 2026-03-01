@@ -24,14 +24,14 @@ function HomepageHeader() {
 const categories = [
   {
     title: 'Java 基础',
-    count: 7,
-    description: 'Java 核心基础、JVM 垃圾回收、并发编程、设计模式与设计原则',
+    count: 6,
+    description: 'Java 核心基础、JVM 垃圾回收、并发编程、设计原则与设计模式',
     link: '/docs/java-basic/java-core-1',
   },
   {
     title: 'Spring 生态',
-    count: 16,
-    description: 'Spring IOC/AOP 源码、注解编程、SpringBoot 自动装配与生命周期、SpringCloud 微服务全家桶',
+    count: 17,
+    description: 'Spring IOC/AOP 源码与注解编程、SpringBoot 自动装配与生命周期、SpringCloud 微服务全家桶',
     link: '/docs/spring/spring-annotation',
   },
   {
@@ -41,15 +41,15 @@ const categories = [
     link: '/docs/data-storage/mysql-intro',
   },
   {
-    title: '中间件与架构',
+    title: '中间件',
     count: 4,
-    description: 'Dubbo 服务治理、CAS 单点登录与 Shiro 集成、XXL-JOB 分布式调度',
-    link: '/docs/middleware/dubbo-intro',
+    description: 'CAS 单点登录（服务端与客户端 Shiro 集成）、Dubbo 服务治理、XXL-JOB 分布式调度',
+    link: '/docs/middleware/cas-server',
   },
   {
-    title: 'DevOps 与工具',
-    count: 6,
-    description: 'Docker 容器化、Nginx 反向代理、Jenkins 持续集成、Linux 与 Git 日常',
+    title: 'DevOps',
+    count: 7,
+    description: 'Docker 容器化、Nginx 反向代理、Jenkins 持续集成、Linux、Tmux、Git 版本管理',
     link: '/docs/devops/docker',
   },
   {
