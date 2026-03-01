@@ -3,20 +3,20 @@
 # 从 Git 仓库拉取最新代码，构建并通过符号链接原子切换实现零停机部署
 #
 # 目录结构:
-#   /opt/blog              项目源码（Git 仓库）
-#   /var/www/blog/releases  构建产物版本目录
-#   /var/www/blog/current   符号链接 → 最新版本（Nginx root 指向此处）
+#   /home/github/blog              项目源码（Git 仓库）
+#   /home/github/blog/www/releases 构建产物版本目录
+#   /home/github/blog/www/current  符号链接 → 最新版本（Nginx root 指向此处）
 #
 # 用法:
 #   手动执行: ./deploy.sh
 #   定时执行: crontab -e 添加以下内容（每 10 分钟检查一次）
-#     */10 * * * * /opt/blog/deploy.sh >> /var/log/blog-deploy.log 2>&1
+#     */10 * * * * /home/github/blog/deploy.sh >> /var/log/blog-deploy.log 2>&1
 
 set -euo pipefail
 
 # ==================== 配置 ====================
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
-DEPLOY_BASE="/var/www/blog"
+DEPLOY_BASE="$REPO_DIR/www"
 RELEASES_DIR="$DEPLOY_BASE/releases"
 CURRENT_LINK="$DEPLOY_BASE/current"
 GIT_BRANCH="master"

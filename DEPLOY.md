@@ -16,21 +16,20 @@
 项目源码与访问目录分离，构建期间站点正常访问：
 
 ```
-/opt/blog/                      # Git 仓库（项目源码）
-  ├── deploy.sh                 # 自动部署脚本
-  ├── docs/                     # 文档内容
-  ├── src/                      # 页面组件
+/home/github/blog/                  # Git 仓库（项目源码）
+  ├── deploy.sh                     # 自动部署脚本
+  ├── docs/                         # 文档内容
+  ├── src/                          # 页面组件
+  ├── www/                          # 部署目录（Nginx 访问，已 gitignore）
+  │   ├── current -> releases/xxx   # 符号链接，指向最新版本
+  │   └── releases/                 # 历史版本
+  │       ├── 20260301_100000_ab12cd34/
+  │       ├── 20260301_120000_ef56gh78/
+  │       └── 20260301_140000_ij90kl12/  ← current
   └── ...
-
-/var/www/blog/                  # 部署目录（Nginx 访问）
-  ├── current -> releases/xxx   # 符号链接，指向最新版本
-  └── releases/                 # 历史版本
-      ├── 20260301_100000_ab12cd34/
-      ├── 20260301_120000_ef56gh78/
-      └── 20260301_140000_ij90kl12/  ← current
 ```
 
-Nginx root 指向 `/var/www/blog/current`，`deploy.sh` 构建完成后通过 `ln -sfn` 原子切换符号链接，Nginx 无需 reload，零停机。
+Nginx root 指向 `/home/github/blog/www/current`，`deploy.sh` 构建完成后通过 `ln -sfn` 原子切换符号链接，Nginx 无需 reload，零停机。
 
 ## 本地开发
 
@@ -46,8 +45,8 @@ npm run serve      # 预览构建产物
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/FelixFly/blog.git /opt/blog
-cd /opt/blog
+git clone https://github.com/FelixFly/blog.git /home/github/blog
+cd /home/github/blog
 npm install
 ```
 
@@ -66,7 +65,7 @@ baseUrl: '/',
 ./deploy.sh
 ```
 
-脚本会自动创建 `/var/www/blog/releases/` 和 `/var/www/blog/current` 符号链接。
+脚本会自动创建 `www/releases/` 和 `www/current` 符号链接。
 
 ### 4. 配置 Nginx
 
@@ -87,7 +86,7 @@ crontab -e
 添加以下内容（每 10 分钟检查 Git 更新）：
 
 ```cron
-*/10 * * * * /opt/blog/deploy.sh >> /var/log/blog-deploy.log 2>&1
+*/10 * * * * /home/github/blog/deploy.sh >> /var/log/blog-deploy.log 2>&1
 ```
 
 ### 6. 配置 HTTPS（可选）
@@ -121,7 +120,7 @@ git fetch → 有更新? → git pull → npm install(按需) → npm run build
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
 | `REPO_DIR` | 脚本所在目录 | Git 仓库路径 |
-| `DEPLOY_BASE` | `/var/www/blog` | 部署根目录 |
+| `DEPLOY_BASE` | `$REPO_DIR/www` | 部署根目录（项目下的 www 子目录） |
 | `GIT_BRANCH` | `master` | 拉取分支 |
 | `KEEP_RELEASES` | `3` | 保留历史版本数 |
 
@@ -142,10 +141,10 @@ git fetch → 有更新? → git pull → npm install(按需) → npm run build
 
 ```bash
 # 查看可用版本
-ls /var/www/blog/releases/
+ls /home/github/blog/www/releases/
 
 # 切换到指定版本
-ln -sfn /var/www/blog/releases/20260301_100000_ab12cd34 /var/www/blog/current
+ln -sfn /home/github/blog/www/releases/20260301_100000_ab12cd34 /home/github/blog/www/current
 ```
 
 无需重启 Nginx，切换即生效。
@@ -164,7 +163,7 @@ ln -sfn /var/www/blog/releases/20260301_100000_ab12cd34 /var/www/blog/current
 
 | 配置项 | 作用 |
 |--------|------|
-| `root /var/www/blog/current` | 指向符号链接，部署时原子切换 |
+| `root /home/github/blog/www/current` | 指向符号链接，部署时原子切换 |
 | `try_files $uri $uri/ /index.html` | SPA 路由回退，刷新页面不会 404 |
 | `location /assets/` + `expires 1y` | Docusaurus 静态资源带 hash，安全长期缓存 |
 | `gzip on` | 启用压缩，减少传输体积 |
