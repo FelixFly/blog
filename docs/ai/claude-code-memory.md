@@ -270,6 +270,220 @@ my-project/
 - 所有 public 方法必须有 Javadoc
 ```
 
+## 完整配置案例：Spring Boot 微服务项目
+
+以一个多人协作的 Spring Boot 微服务项目为例，展示各层级应该配置什么内容。
+
+### 目录总览
+
+```
+# ============ 用户级（个人全局，不提交） ============
+~/.claude/
+  CLAUDE.md                          # 个人偏好
+  rules/
+    git-workflow.md                  # 个人 Git 习惯
+    communication.md                 # 沟通风格
+  projects/
+    pcm-patient/memory/              # Auto Memory（Claude 自动维护）
+      MEMORY.md
+      debugging.md
+
+# ============ 项目级（团队共享，提交到 Git） ============
+pcm-patient/
+  CLAUDE.md                          # 项目入口：架构、命令、核心约定
+  CLAUDE.local.md                    # 个人本地覆盖（.gitignore）
+  .claude/
+    settings.json                    # 项目设置
+    rules/
+      api-design.md                  # API URL 设计规范
+      coding-conventions.md          # 编码命名约定
+      database.md                    # 数据库设计标准
+      module-structure.md            # COLA 模块结构
+      querydsl.md                    # QueryDSL 使用规范
+```
+
+### 用户级 `~/.claude/CLAUDE.md`
+
+放**所有项目通用的个人偏好**，与具体项目无关：
+
+```markdown
+# 个人偏好
+
+## 语言与风格
+- 用中文回答技术问题
+- 代码注释用中文
+- 不要在输出中使用 emoji
+
+## 工具偏好
+- 包管理器使用 Maven，不要用 Gradle
+- 优先使用 IntelliJ IDEA 的快捷键风格
+- Git commit message 用中文
+
+## 通用编码习惯
+- 缩进使用 4 空格
+- 文件末尾保留空行
+- import 语句按字母排序
+```
+
+### 用户级 `~/.claude/rules/git-workflow.md`
+
+放**个人 Git 工作流**偏好（不强制团队）：
+
+```markdown
+# Git 工作流
+
+- 提交前先 `git pull --rebase`
+- 不要自动 push，等我确认后再推
+- commit message 格式：类型(范围): 描述
+  - feat(patient): 新增患者搜索功能
+  - fix(empi): 修复 EMPI 匹配逻辑
+- 不要使用 --force push
+- 不要自动 amend 上一个 commit
+```
+
+### 项目级 `CLAUDE.md`
+
+放**团队必须统一遵守的核心规则**，是整个记忆系统的入口：
+
+```markdown
+# PCM Patient 项目
+
+## 构建命令
+- `mvn clean compile` — 编译
+- `mvn test -pl pcm-patient-app` — 运行 app 模块测试
+- `mvn test -pl pcm-patient-app -Dtest=PatInfoControllerTest` — 单个测试类
+- `mvn package -DskipTests` — 打包跳过测试
+
+## 项目架构
+- 采用 COLA 分层架构，7 模块结构
+- 依赖方向：start → legacy → infrastructure → app → domain → api
+- Controller 在 app 模块（Adapter 层），不在 start 模块
+- 新代码写 COLA 模块，旧代码保留在 legacy 模块
+
+## 核心约定
+- DI 使用 @RequiredArgsConstructor + final 字段，禁止 @Autowired
+- 新模块使用 QueryDSL，legacy 模块使用 MyBatis Plus
+- 日期类型：LocalDateTime（字段名以 Time 结尾）/ LocalDate（以 Date 结尾）
+- 所有 Controller 返回 Response<T>，分页返回 Response<PageList<T>>
+- 禁止 SELECT *，必须列出具体字段
+
+## 规范详情
+详见 @.claude/rules/ 目录下的各规范文件
+```
+
+### 项目级 `.claude/rules/api-design.md`
+
+放**具体领域的详细规范**，从 CLAUDE.md 拆分出来避免主文件过长：
+
+```markdown
+# API URL 设计规范
+
+## URL 格式
+/version/access-control/domain-object/action
+
+示例：GET /v1/pt/patient-info/{patientInfoId}
+
+## 访问控制级别
+| 代码 | 级别 | 说明 |
+|------|------|------|
+| pb | Public | 无需认证 |
+| pt | Protected | Token 认证 |
+| df | Default | Token + 加解密 |
+| pv | Private | 内部调用，不经网关 |
+
+## 规则
+- 路径使用名词，不用动词
+- 使用单数形式：/ticket 不是 /tickets
+- 最多 2 层嵌套：/ticket/12/message
+- 使用 kebab-case：ticket-config
+```
+
+### 项目级 `.claude/rules/coding-conventions.md`
+
+```markdown
+---
+paths:
+  - "**/*.java"
+---
+
+# Java 编码约定
+
+## 命名规范
+| 层 | 类型 | 后缀 | 示例 |
+|----|------|------|------|
+| Adapter | 写入请求 | Request | UserCreateRequest |
+| Adapter | 查询请求 | QueryRequest | UserListQueryRequest |
+| Adapter | 响应 | Response | UserDetailResponse |
+| Domain | 领域对象 | 无 | User |
+| Infra | 数据库实体 | Entity | UserEntity |
+| Infra | JOIN 结果 | Projection | UserWithDeptProjection |
+
+## 强制规则
+- 方法体不超过 80 行
+- 禁止使用 Object / Map / JSONObject 作为参数或返回值
+- 禁止注释掉的代码，直接删除
+- 禁止使用 Optional 作为返回值，用 @Nullable 代替
+- 使用枚举代替常量类
+```
+
+### 本地级 `CLAUDE.local.md`
+
+放**个人本地环境差异**，不提交到 Git：
+
+```markdown
+# 本地开发环境
+
+## 数据库连接
+- 本地 MySQL: localhost:3306/pcm_patient
+- 本地 Redis: localhost:6379
+
+## 开发习惯
+- 我负责 patient-bindcard 和 patient-empi 两个业务域
+- 优先看 legacy 模块的旧实现再写新代码
+- 测试用 @WebMvcTest，不要启动完整 Spring 容器
+```
+
+### Auto Memory（Claude 自动维护）
+
+`~/.claude/projects/pcm-patient/memory/MEMORY.md`——Claude 在多次会话中自动积累：
+
+```markdown
+# PCM Patient 项目笔记
+
+## 构建
+- mvn compile 需要先 cd 到项目根目录
+- pcm-patient-app 模块测试需要 spring-boot-starter-test 依赖（test scope）
+
+## 调试经验
+- QueryDSL Q 类是手写的，不要建议用 apt-maven-plugin 生成
+- BeanNameConflict 错误用 FullyQualifiedAnnotationBeanNameGenerator 解决
+- 详见 @debugging.md
+
+## 用户偏好
+- 用户喜欢先看完整的 diff 再确认提交
+- 重构时保持旧类名不变，不加 New 后缀
+```
+
+### 各层级职责总结
+
+| 层级 | 文件 | 配什么 | 谁维护 | 是否提交 |
+|------|------|--------|--------|---------|
+| 组织级 | `/etc/claude-code/CLAUDE.md` | 公司安全红线、合规要求 | IT/DevOps | N/A |
+| 用户级 | `~/.claude/CLAUDE.md` | 个人偏好：语言、工具、沟通风格 | 你自己 | 不提交 |
+| 用户级 | `~/.claude/rules/*.md` | 个人通用规则：Git 工作流 | 你自己 | 不提交 |
+| 项目级 | `./CLAUDE.md` | 项目入口：架构、命令、核心约定 | 团队 | 提交 |
+| 项目级 | `.claude/rules/*.md` | 详细规范：API、编码、数据库、模块 | 团队 | 提交 |
+| 本地级 | `./CLAUDE.local.md` | 本地环境、个人负责的模块 | 你自己 | 不提交 |
+| Auto Memory | `~/.claude/projects/*/memory/` | 构建经验、调试笔记、用户偏好 | Claude | 不提交 |
+
+:::tip 配置原则
+- **会变的放低层级**——本地数据库地址放 `CLAUDE.local.md`，不污染团队配置
+- **团队统一的放项目级**——编码规范放 `.claude/rules/`，所有人同步
+- **个人习惯放用户级**——Git 风格、沟通偏好放 `~/.claude/`，跨项目复用
+- **篇幅大的拆 rules**——CLAUDE.md 控制在 200 行以内，详细规范拆到独立文件
+- **让 Claude 记 Claude 的事**——构建踩坑、调试技巧让 Auto Memory 自动积累
+:::
+
 ## 要点总结
 
 1. **CLAUDE.md 是给 Claude 的指令**，你来写，团队共享；Auto Memory 是 Claude 的笔记，自动积累
