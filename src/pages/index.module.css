@@ -12,12 +12,61 @@
 }
 
 .features {
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
-  width: 100%;
+  padding: 3rem 0;
 }
 
-.feature {
+.sectionTitle {
+  text-align: center;
   margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+.cardCol {
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  display: block;
+  height: 100%;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  transition: box-shadow 0.2s, border-color 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card:hover {
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  color: inherit;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.cardHeader h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  background-color: var(--ifm-color-primary);
+  color: #fff;
+  white-space: nowrap;
+}
+
+.cardDesc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.6;
 }
