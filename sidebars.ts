@@ -139,6 +139,7 @@ const sidebars: SidebarsConfig = {
             'devops/tmux',
           ],
         },
+        'devops/ghostty-xcmd-tmux-setup',
         'devops/git',
       ],
     },
@@ -147,7 +148,9 @@ const sidebars: SidebarsConfig = {
       label: 'AI 与大模型',
       items: [
         'ai/ai-coding-concepts',
+        'ai/ai-coding-tools-guide',
         'ai/claude-code-memory',
+        'ai/claude-code-skill-guide',
         'ai/bmad-method',
         'ai/bmad-team-mode',
         'ai/spec-kit',

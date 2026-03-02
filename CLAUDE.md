@@ -50,3 +50,19 @@ Key pattern: comments are injected into every doc page via the swizzled `DocItem
 - Sidebar categories are defined in `sidebars.ts` mapping directory names to Chinese labels.
 - Images go in `static/img/` and are referenced with absolute paths (`/img/filename.png`).
 - Blog feature is disabled (`blog: false` in config).
+
+## Navigation Sync Rule
+
+When adding or removing a doc, **all four places** must stay in sync:
+
+1. **`sidebars.ts`** — left sidebar navigation
+2. **`docusaurus.config.ts`** → `themeConfig.navbar.items` — top navbar dropdowns
+3. **`src/pages/index.tsx`** → `categories` array — homepage card counts and descriptions
+4. **The actual `.md` file** in `docs/` directory
+
+Checklist for adding a new doc:
+- [ ] Create `.md` file in appropriate `docs/{category}/` directory
+- [ ] Add entry to `sidebars.ts` under the correct category
+- [ ] Add entry to navbar dropdown in `docusaurus.config.ts`
+- [ ] Update the matching category `count` and `description` in `src/pages/index.tsx`
+- [ ] Run `npm run build` to verify no broken links

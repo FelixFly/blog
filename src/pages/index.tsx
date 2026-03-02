@@ -48,14 +48,14 @@ const categories = [
   },
   {
     title: 'DevOps',
-    count: 7,
-    description: 'Docker 容器化、Nginx 反向代理、Jenkins 持续集成、Linux、Tmux、Git 版本管理',
+    count: 8,
+    description: 'Docker 容器化、Nginx 反向代理、Jenkins 持续集成、Linux、Ghostty + tmux 终端工具链、Git 版本管理',
     link: '/docs/devops/docker',
   },
   {
     title: 'AI 与大模型',
-    count: 6,
-    description: 'AI 辅助编程理念、BMAD 方法论、Spec Kit 规范工具、OpenSpec SDD 设计',
+    count: 9,
+    description: 'AI 编程工具全景、Claude Code 记忆与 Skill 系统、BMAD 方法论与 Team Mode、Spec Kit、OpenSpec SDD',
     link: '/docs/ai/ai-coding-concepts',
   },
 ];
