@@ -154,9 +154,24 @@ npm install -g @anthropic-ai/claude-code
 ```bash
 # 1. 安装 WSL2（PowerShell 管理员模式）
 wsl --install
+# 安装完成后重启电脑，首次启动 WSL 会要求设置用户名和密码
 
-# 2. 在 WSL 中安装 Node.js（通过 x-cmd 或 nvm）
-# 3. 安装 Claude Code
+# 2. 在 WSL 中安装 Node.js（二选一）
+
+# 方式一：通过 nvm 安装（推荐，方便管理多版本）
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+source ~/.bashrc
+nvm install --lts
+
+# 方式二：通过 apt 安装（简单快速）
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# 3. 验证安装
+node -v   # 应显示 v22.x 或更高
+npm -v    # 应显示 10.x 或更高
+
+# 4. 安装 Claude Code
 npm install -g @anthropic-ai/claude-code
 ```
 
@@ -213,7 +228,17 @@ OpenAI 官方的开源终端编程 Agent，Rust 构建，速度快。
 npm install -g @openai/codex
 ```
 
-**Windows：** 通过 WSL2 或原生 Node.js 环境安装。
+**Windows：**
+
+```bash
+# 方式一：通过 WSL2（推荐，与 Claude Code 共用环境）
+# 如果已按上面 Claude Code 的步骤安装了 WSL2 + Node.js，直接运行：
+npm install -g @openai/codex
+
+# 方式二：原生 Windows（需先安装 Node.js）
+# 从 https://nodejs.org 下载 LTS 版安装包，安装后在 PowerShell 中运行：
+npm install -g @openai/codex
+```
 
 #### 价格
 

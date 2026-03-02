@@ -149,6 +149,7 @@ const sidebars: SidebarsConfig = {
         'ai/ai-coding-concepts',
         'ai/claude-code-memory',
         'ai/bmad-method',
+        'ai/bmad-team-mode',
         'ai/spec-kit',
         'ai/openspec-sdd',
         'ai/superpowers',
