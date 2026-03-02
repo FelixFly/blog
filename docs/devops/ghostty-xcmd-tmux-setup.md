@@ -293,78 +293,118 @@ bind r source-file ~/.tmux.conf \; display-message "Config reloaded"
 
 ### tmux 常用操作速查
 
-所有 tmux 命令都需要先按**前缀键**（上面配置为 `Ctrl+a`），再按对应的键。
-
-#### 会话管理
+所有 tmux 快捷键都需要先按**前缀键** `Ctrl+a`，再按对应的键。
 
 ```bash
 # 终端外操作
-tmux new -s work         # 创建名为 work 的会话
-tmux ls                  # 列出所有会话
-tmux attach -t work      # 连接到 work 会话
+tmux new -s work          # 创建名为 work 的会话
+tmux ls                   # 列出所有会话
+tmux attach -t work       # 连接到 work 会话
 tmux kill-session -t work # 删除会话
-
-# 终端内操作（先按 Ctrl+a）
-# Ctrl+a d    — 分离会话（回到普通终端，会话后台运行）
-# Ctrl+a s    — 选择会话
-# Ctrl+a $    — 重命名会话
 ```
 
-#### 窗口管理
-
-```bash
-# Ctrl+a c    — 新建窗口
-# Ctrl+a ,    — 重命名窗口
-# Ctrl+a n    — 下一个窗口
-# Ctrl+a p    — 上一个窗口
-# Ctrl+a 1-9  — 切换到指定窗口
-# Ctrl+a &    — 关闭窗口
-```
-
-#### 面板管理
-
-```bash
-# Ctrl+a |    — 水平分屏（上面自定义的）
-# Ctrl+a -    — 垂直分屏（上面自定义的）
-# Alt+方向键  — 切换面板（无需前缀键）
-# Ctrl+a z    — 面板最大化/还原
-# Ctrl+a x    — 关闭面板
-```
+完整快捷键见下方"快捷键速查总表"。
 
 ## 四、三者整合：完整工作流
 
 ### 场景一：日常开发
 
-```
-1. 打开 Ghostty（或 Ctrl+` 呼出 Quick Terminal）
-2. 自动进入 tmux 会话
-3. tmux 窗口 1：编辑器（vim/neovim）
-4. tmux 窗口 2：开发服务器（npm run dev）
-5. tmux 窗口 3：Git 操作（lazygit）
-6. 关闭 Ghostty，会话不丢失
-7. 下次打开，tmux attach 恢复所有窗口
-```
+从启动到多窗口开发的完整按键流程：
+
+| 步骤 | 操作 | 快捷键 / 命令 |
+|------|------|--------------|
+| 1. 呼出终端 | Ghostty Quick Terminal | `Ctrl + `` ` |
+| 2. 创建 tmux 会话 | 新建或恢复会话 | `tmux new -A -s dev` |
+| 3. 编辑器就绪 | 窗口 1 已在编辑器中 | — |
+| 4. 新建窗口跑服务 | 创建窗口 2 | `Ctrl+a c` |
+| 5. 启动开发服务器 | 执行命令 | `npm run dev` |
+| 6. 再建窗口管 Git | 创建窗口 3 | `Ctrl+a c` |
+| 7. 打开 lazygit | 执行命令 | `lazygit` |
+| 8. 切回编辑器 | 跳到窗口 1 | `Ctrl+a 1` |
+| 9. 需要看日志 | 当前窗口水平分屏 | `Ctrl+a |` |
+| 10. 在分屏间切换 | 移动焦点 | `Alt + 方向键` |
+| 11. 分屏暂时最大化 | 聚焦当前面板 | `Ctrl+a z` |
+| 12. 下班收工 | 分离会话（tmux 后台运行） | `Ctrl+a d` |
+| 13. 关闭终端 | 隐藏 Quick Terminal | `Ctrl + `` ` |
+| 14. 第二天恢复 | 一切还在 | `Ctrl + `` ` → `tmux attach` |
 
 ### 场景二：远程服务器
 
-```
-1. Ghostty SSH 到远程服务器
-   （shell-integration-features 自动安装 terminfo，无兼容问题）
-2. tmux new -s deploy 创建会话
-3. 执行部署任务
-4. Ctrl+a d 分离会话
-5. 网络断开也不影响，重连后 tmux attach -t deploy 恢复
-```
+SSH 远程操作，断网不丢失：
+
+| 步骤 | 操作 | 快捷键 / 命令 |
+|------|------|--------------|
+| 1. 新建 Ghostty 标签 | 在 Ghostty 中开新标签 | `Cmd + T` |
+| 2. SSH 登录 | 连接远程（terminfo 自动安装） | `ssh user@server` |
+| 3. 创建远程 tmux | 在服务器上创建会话 | `tmux new -s deploy` |
+| 4. 执行部署 | 分屏查看日志 | `Ctrl+a |` → `tail -f deploy.log` |
+| 5. 切回左侧执行 | 移动焦点 | `Alt + Left` |
+| 6. 部署完暂时离开 | 分离远程 tmux | `Ctrl+a d` |
+| 7. 断开 SSH | 退出连接 | `exit` |
+| 8. 网络恢复后重连 | 恢复远程会话 | `ssh user@server` → `tmux attach -t deploy` |
 
 ### 场景三：多项目并行
 
-```
-tmux 会话 "project-a"  → 窗口 1: 前端  窗口 2: 后端  窗口 3: 数据库
-tmux 会话 "project-b"  → 窗口 1: 代码  窗口 2: 测试
-tmux 会话 "ops"        → 窗口 1: 监控  窗口 2: 日志
+在多个 tmux 会话间快速切换：
 
-在 Ghostty 中通过 Ctrl+a s 随时切换会话
-```
+| 步骤 | 操作 | 快捷键 / 命令 |
+|------|------|--------------|
+| 1. 创建项目 A 会话 | | `tmux new -s project-a` |
+| 2. 搭建项目 A 环境 | 新建多个窗口 | `Ctrl+a c`（重复） |
+| 3. 切到新会话 | 分离当前，创建项目 B | `Ctrl+a d` → `tmux new -s project-b` |
+| 4. 再创建运维会话 | | `Ctrl+a d` → `tmux new -s ops` |
+| 5. 查看所有会话 | 会话选择器 | `Ctrl+a s` |
+| 6. 切到项目 A | 在选择器中选中，回车 | `↑ ↓` 选择 → `Enter` |
+| 7. 切到上一个会话 | 快速切换最近两个会话 | `Ctrl+a L` |
+| 8. 关闭某个会话 | 切到目标会话后关闭 | `Ctrl+a s` → 选中 → `tmux kill-session` |
+
+### 快捷键速查总表
+
+#### Ghostty 快捷键（macOS）
+
+| 快捷键 | 功能 |
+|--------|------|
+| `Ctrl + `` ` | 呼出 / 隐藏 Quick Terminal |
+| `Cmd + N` | 新窗口 |
+| `Cmd + T` | 新标签页 |
+| `Cmd + D` | 水平分屏 |
+| `Cmd + Shift + D` | 垂直分屏 |
+| `Cmd + Option + 方向键` | 在 Ghostty 分屏间移动 |
+| `Cmd + Enter` | Ghostty 分屏最大化 / 还原 |
+| `Cmd + W` | 关闭当前面板 |
+| `Cmd + 数字` | 切换 Ghostty 标签页 |
+
+#### tmux 快捷键（前缀 `Ctrl+a`）
+
+| 快捷键 | 功能 | 分类 |
+|--------|------|------|
+| `Ctrl+a d` | 分离会话 | 会话 |
+| `Ctrl+a s` | 会话选择器 | 会话 |
+| `Ctrl+a L` | 切换到上一个会话 | 会话 |
+| `Ctrl+a $` | 重命名会话 | 会话 |
+| `Ctrl+a c` | 新建窗口 | 窗口 |
+| `Ctrl+a ,` | 重命名窗口 | 窗口 |
+| `Ctrl+a 1-9` | 切换到指定窗口 | 窗口 |
+| `Ctrl+a n` / `p` | 下 / 上一个窗口 | 窗口 |
+| `Ctrl+a &` | 关闭窗口 | 窗口 |
+| `Ctrl+a \|` | 水平分屏 | 面板 |
+| `Ctrl+a -` | 垂直分屏 | 面板 |
+| `Alt + 方向键` | 切换面板（无需前缀） | 面板 |
+| `Ctrl+a z` | 面板最大化 / 还原 | 面板 |
+| `Ctrl+a x` | 关闭面板 | 面板 |
+| `Ctrl+a [` | 进入复制模式（vi 操作） | 复制 |
+| `Ctrl+a r` | 重新加载配置 | 其他 |
+
+#### x-cmd 常用命令
+
+| 命令 | 功能 |
+|------|------|
+| `x pkg install <tool>` | 安装工具 |
+| `x env use node=20` | 切换 Node 版本 |
+| `x env try python=3.12` | 临时使用 Python 版本 |
+| `x env ls` | 查看已安装环境 |
+| `x theme` | 切换终端主题 |
+| `x upgrade` | 升级 x-cmd |
 
 ### 自动化启动脚本
 
