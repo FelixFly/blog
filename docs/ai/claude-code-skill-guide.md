@@ -121,13 +121,13 @@ Claude: 我从刚才的操作中提取了以下流程...
 - **经过验证** — 提炼的流程是实际跑通过的
 - **上下文完整** — Claude 能捕获你可能想不到的细节
 
-### 方式二：从零设计（5 步流程）
+### 方式二：从零设计
 
 适合你已经清楚知道想要什么 Skill 的场景。
 
 #### 第一步：明确需求
 
-回答三个问题：
+开始之前，先想清楚三个问题：
 
 1. **做什么？** → 一句话描述核心功能
 2. **什么时候触发？** → 用户会说什么话、提到什么关键词
@@ -143,17 +143,41 @@ Claude: 我从刚才的操作中提取了以下流程...
   3. 输出为适配公众号的 HTML
 ```
 
-#### 第二步：初始化 Skill
+#### 第二步：让 Claude 创建 Skill
 
-使用 skill-creator 提供的初始化脚本：
+直接用 `/skill-creator` 斜杠命令，Claude 会引导你完成整个创建过程：
 
-```bash
-python3 ~/.claude/skills/skill-creator/scripts/init_skill.py wechat-format --path ~/.claude/skills
+```
+你: /skill-creator
+你: 我想创建一个把 Markdown 转公众号格式的 Skill，
+    触发词包含"转公众号"、"微信排版"、"wechat format"
+    流程是读取 md → 转换样式 → 输出 HTML
+
+Claude: [引导你确认需求，自动生成目录结构和 SKILL.md]
 ```
 
-自动生成模板目录结构，比手动创建更可靠。
+Claude 会自动完成：
+- 创建 `~/.claude/skills/wechat-format/` 目录
+- 生成带 frontmatter 的 SKILL.md
+- 根据需要创建 `scripts/`、`references/`、`assets/` 子目录
+- 验证格式是否正确
 
-#### 第三步：编写 SKILL.md
+你也可以直接描述需求，不用斜杠命令：
+
+```
+"帮我创建一个 Skill，功能是..."
+"Create a new skill called wechat-format that..."
+```
+
+#### 第三步：检查并调整
+
+Claude 生成后，检查 SKILL.md 的内容是否符合预期。重点关注：
+
+- **description** 是否包含了所有触发关键词
+- **正文流程**是否完整准确
+- 是否需要补充 `scripts/`（脚本）或 `references/`（参考文档）
+
+生成的 SKILL.md 结构大致如下：
 
 ```yaml
 ---
@@ -187,7 +211,16 @@ description: >
 
 编写技巧详见下一章"如何写好 SKILL.md"。
 
-#### 第四步：添加资源文件（可选）
+#### 可选：添加资源文件
+
+根据需要让 Claude 补充脚本、参考文档或模板：
+
+```
+"把格式转换的逻辑写成 Python 脚本放到 scripts/ 下"
+"把公众号 CSS 兼容性说明放到 references/ 下"
+```
+
+最终目录结构：
 
 ```
 wechat-format/
@@ -199,14 +232,6 @@ wechat-format/
 └── assets/
     └── template.html       ← HTML 输出模板
 ```
-
-#### 第五步：打包发布
-
-```bash
-python3 ~/.claude/skills/skill-creator/scripts/package_skill.py ~/.claude/skills/wechat-format
-```
-
-脚本会自动验证格式，通过后生成 `.skill` 文件。
 
 ## 如何写好 SKILL.md
 
