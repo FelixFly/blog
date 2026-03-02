@@ -214,10 +214,11 @@ tmux 的配置文件位于 `~/.tmux.conf`：
 
 ```bash
 # ===== 基础设置 =====
-# 前缀键改为 Ctrl+a（默认 Ctrl+b 太远了）
-set -g prefix C-a
-unbind C-b
-bind C-a send-prefix
+# 前缀键默认为 Ctrl+b
+# 如果觉得 Ctrl+b 距离太远，可以改为 Ctrl+a：
+# set -g prefix C-a
+# unbind C-b
+# bind C-a send-prefix
 
 # 窗口和面板编号从 1 开始（0 在键盘太远）
 set -g base-index 1
@@ -293,7 +294,7 @@ bind r source-file ~/.tmux.conf \; display-message "Config reloaded"
 
 ### tmux 常用操作速查
 
-所有 tmux 快捷键都需要先按**前缀键** `Ctrl+a`，再按对应的键。
+所有 tmux 快捷键都需要先按**前缀键** `Ctrl+b`，再按对应的键。
 
 ```bash
 # 终端外操作
@@ -307,6 +308,8 @@ tmux kill-session -t work # 删除会话
 
 ## 四、三者整合：完整工作流
 
+> 以下 tmux 快捷键均使用默认前缀 `Ctrl+b`。操作方式：先按 `Ctrl+b` 松开，再按对应的键。
+
 ### 场景一：日常开发
 
 从启动到多窗口开发的完整按键流程：
@@ -316,15 +319,15 @@ tmux kill-session -t work # 删除会话
 | 1. 呼出终端 | Ghostty Quick Terminal | `Ctrl + `` ` |
 | 2. 创建 tmux 会话 | 新建或恢复会话 | `tmux new -A -s dev` |
 | 3. 编辑器就绪 | 窗口 1 已在编辑器中 | — |
-| 4. 新建窗口跑服务 | 创建窗口 2 | `Ctrl+a c` |
+| 4. 新建窗口跑服务 | 创建窗口 2 | `Ctrl+b c` |
 | 5. 启动开发服务器 | 执行命令 | `npm run dev` |
-| 6. 再建窗口管 Git | 创建窗口 3 | `Ctrl+a c` |
+| 6. 再建窗口管 Git | 创建窗口 3 | `Ctrl+b c` |
 | 7. 打开 lazygit | 执行命令 | `lazygit` |
-| 8. 切回编辑器 | 跳到窗口 1 | `Ctrl+a 1` |
-| 9. 需要看日志 | 当前窗口水平分屏 | `Ctrl+a |` |
+| 8. 切回编辑器 | 跳到窗口 1 | `Ctrl+b 1` |
+| 9. 需要看日志 | 当前窗口水平分屏 | `Ctrl+b \|` |
 | 10. 在分屏间切换 | 移动焦点 | `Alt + 方向键` |
-| 11. 分屏暂时最大化 | 聚焦当前面板 | `Ctrl+a z` |
-| 12. 下班收工 | 分离会话（tmux 后台运行） | `Ctrl+a d` |
+| 11. 分屏暂时最大化 | 聚焦当前面板 | `Ctrl+b z` |
+| 12. 下班收工 | 分离会话（tmux 后台运行） | `Ctrl+b d` |
 | 13. 关闭终端 | 隐藏 Quick Terminal | `Ctrl + `` ` |
 | 14. 第二天恢复 | 一切还在 | `Ctrl + `` ` → `tmux attach` |
 
@@ -337,9 +340,9 @@ SSH 远程操作，断网不丢失：
 | 1. 新建 Ghostty 标签 | 在 Ghostty 中开新标签 | `Cmd + T` |
 | 2. SSH 登录 | 连接远程（terminfo 自动安装） | `ssh user@server` |
 | 3. 创建远程 tmux | 在服务器上创建会话 | `tmux new -s deploy` |
-| 4. 执行部署 | 分屏查看日志 | `Ctrl+a |` → `tail -f deploy.log` |
+| 4. 执行部署 | 分屏查看日志 | `Ctrl+b \|` → `tail -f deploy.log` |
 | 5. 切回左侧执行 | 移动焦点 | `Alt + Left` |
-| 6. 部署完暂时离开 | 分离远程 tmux | `Ctrl+a d` |
+| 6. 部署完暂时离开 | 分离远程 tmux | `Ctrl+b d` |
 | 7. 断开 SSH | 退出连接 | `exit` |
 | 8. 网络恢复后重连 | 恢复远程会话 | `ssh user@server` → `tmux attach -t deploy` |
 
@@ -350,13 +353,13 @@ SSH 远程操作，断网不丢失：
 | 步骤 | 操作 | 快捷键 / 命令 |
 |------|------|--------------|
 | 1. 创建项目 A 会话 | | `tmux new -s project-a` |
-| 2. 搭建项目 A 环境 | 新建多个窗口 | `Ctrl+a c`（重复） |
-| 3. 切到新会话 | 分离当前，创建项目 B | `Ctrl+a d` → `tmux new -s project-b` |
-| 4. 再创建运维会话 | | `Ctrl+a d` → `tmux new -s ops` |
-| 5. 查看所有会话 | 会话选择器 | `Ctrl+a s` |
+| 2. 搭建项目 A 环境 | 新建多个窗口 | `Ctrl+b c`（重复） |
+| 3. 切到新会话 | 分离当前，创建项目 B | `Ctrl+b d` → `tmux new -s project-b` |
+| 4. 再创建运维会话 | | `Ctrl+b d` → `tmux new -s ops` |
+| 5. 查看所有会话 | 会话选择器 | `Ctrl+b s` |
 | 6. 切到项目 A | 在选择器中选中，回车 | `↑ ↓` 选择 → `Enter` |
-| 7. 切到上一个会话 | 快速切换最近两个会话 | `Ctrl+a L` |
-| 8. 关闭某个会话 | 切到目标会话后关闭 | `Ctrl+a s` → 选中 → `tmux kill-session` |
+| 7. 切到上一个会话 | 快速切换最近两个会话 | `Ctrl+b L` |
+| 8. 关闭某个会话 | 切到目标会话后关闭 | `Ctrl+b s` → 选中 → `tmux kill-session` |
 
 ### 快捷键速查总表
 
@@ -374,26 +377,34 @@ SSH 远程操作，断网不丢失：
 | `Cmd + W` | 关闭当前面板 |
 | `Cmd + 数字` | 切换 Ghostty 标签页 |
 
-#### tmux 快捷键（前缀 `Ctrl+a`）
+#### tmux 快捷键（默认前缀 `Ctrl+b`）
 
 | 快捷键 | 功能 | 分类 |
 |--------|------|------|
-| `Ctrl+a d` | 分离会话 | 会话 |
-| `Ctrl+a s` | 会话选择器 | 会话 |
-| `Ctrl+a L` | 切换到上一个会话 | 会话 |
-| `Ctrl+a $` | 重命名会话 | 会话 |
-| `Ctrl+a c` | 新建窗口 | 窗口 |
-| `Ctrl+a ,` | 重命名窗口 | 窗口 |
-| `Ctrl+a 1-9` | 切换到指定窗口 | 窗口 |
-| `Ctrl+a n` / `p` | 下 / 上一个窗口 | 窗口 |
-| `Ctrl+a &` | 关闭窗口 | 窗口 |
-| `Ctrl+a \|` | 水平分屏 | 面板 |
-| `Ctrl+a -` | 垂直分屏 | 面板 |
+| `Ctrl+b d` | 分离会话 | 会话 |
+| `Ctrl+b s` | 会话选择器 | 会话 |
+| `Ctrl+b L` | 切换到上一个会话 | 会话 |
+| `Ctrl+b $` | 重命名会话 | 会话 |
+| `Ctrl+b c` | 新建窗口 | 窗口 |
+| `Ctrl+b ,` | 重命名窗口 | 窗口 |
+| `Ctrl+b 1-9` | 切换到指定窗口 | 窗口 |
+| `Ctrl+b n` / `p` | 下 / 上一个窗口 | 窗口 |
+| `Ctrl+b &` | 关闭窗口 | 窗口 |
+| `Ctrl+b \|` | 水平分屏（自定义） | 面板 |
+| `Ctrl+b -` | 垂直分屏（自定义） | 面板 |
 | `Alt + 方向键` | 切换面板（无需前缀） | 面板 |
-| `Ctrl+a z` | 面板最大化 / 还原 | 面板 |
-| `Ctrl+a x` | 关闭面板 | 面板 |
-| `Ctrl+a [` | 进入复制模式（vi 操作） | 复制 |
-| `Ctrl+a r` | 重新加载配置 | 其他 |
+| `Ctrl+b z` | 面板最大化 / 还原 | 面板 |
+| `Ctrl+b x` | 关闭面板 | 面板 |
+| `Ctrl+b [` | 进入复制模式（vi 操作） | 复制 |
+| `Ctrl+b r` | 重新加载配置（自定义） | 其他 |
+
+> **自定义前缀键：** 如果觉得 `Ctrl+b` 距离太远，可以在 `~/.tmux.conf` 中改为 `Ctrl+a`：
+> ```bash
+> set -g prefix C-a
+> unbind C-b
+> bind C-a send-prefix
+> ```
+> 修改后以上所有 `Ctrl+b` 替换为 `Ctrl+a` 即可。
 
 #### x-cmd 常用命令
 
